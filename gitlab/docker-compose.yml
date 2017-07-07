@@ -18,31 +18,39 @@ services:
     #- ./docker/entrypoint.sh:/app/gitlab/entrypoint.sh
     #- ./docker/gitlab_utils.sh:/app/gitlab/gitlab_utils.sh
     # for auto repo init
-    #- gitlab-volume:${GIT_VOLUME:-/app/gitlab/data}
+    - volume-gitlab-git_volume:${GIT_VOLUME:-/app/gitlab/data}
     - ../../:${GIT_VOLUME:-/app/gitlab/data}/workspace
     # keep gitlab's data
-    - gitlab-volume:/data
-    - ${HOME}/.oss/${GIT_HOSTNAME:-gitlab.local}/etc/gitlab:/etc/gitlab
-    - ${HOME}/.oss/${GIT_HOSTNAME:-gitlab.local}/var/opt/gitlab:/var/opt/gitlab
-    - ${HOME}/.oss/${GIT_HOSTNAME:-gitlab.local}/var/log/gitlab:/var/log/gitlab
+    - volume-gitlab-data:/data
+    - volume-gitlab-etc_gitlab:/etc/gitlab
+    - volume-gitlab-var_log_gitlab:/var/log/gitlab
+    - volume-gitlab-var_opt_gitlab:/var/opt/gitlab
+    #- ${HOME}/.oss/${GIT_HOSTNAME:-gitlab.local}/etc/gitlab:/etc/gitlab
+    #- ${HOME}/.oss/${GIT_HOSTNAME:-gitlab.local}/var/log/gitlab:/var/log/gitlab
+    #- ${HOME}/.oss/${GIT_HOSTNAME:-gitlab.local}/var/opt/gitlab:/var/opt/gitlab
     environment:
     - CONFIGSERVER_WEBHOOK_ENDPOINT=${CONFIGSERVER_WEBHOOK_ENDPOINT:-http://configserver.local:8888/monitor}
     - GITLAB_ROOT_PASSWORD=${GITLAB_ROOT_PASSWORD:-user_pass}
+    - GITLAB_SHELL_SSH_PORT=${GITLAB_SHELL_SSH_PORT:-20022}
     # 'admin' is preserved by gitlab
     - GIT_ADMIN_USERNAME=${GIT_ADMIN_USERNAME:-user}
     - GIT_DEPLOY_KEY=${GIT_DEPLOY_KEY:-/app/gitlab/data/default_deploy_key.pub}
     - GIT_HOSTNAME=${GIT_HOSTNAME:-gitlab.local}
     - GIT_HTTP_PORT=${GIT_HTTP_PORT:-10080}
-    - GITLAB_SHELL_SSH_PORT=${GITLAB_SHELL_SSH_PORT:-20022}
     - GIT_VOLUME=${GIT_VOLUME:-/app/gitlab/data}
     - GIT_WORKSPACE=${GIT_VOLUME:-/app/gitlab/data}/workspace
     - SKIP_AUTO_REPO_INIT=${SKIP_AUTO_REPO_INIT:-true}
-    external_links:
-    - configserver.local:configserver.local
-volumes:
-  gitlab-volume: {}
+    #external_links:
+    #- configserver.local:configserver.local
 
 networks:
   default:
     external:
       name: oss-network
+
+volumes:
+  volume-gitlab-data: {}
+  volume-gitlab-etc_gitlab: {}
+  volume-gitlab-git_volume: {}
+  volume-gitlab-var_log_gitlab: {}
+  volume-gitlab-var_opt_gitlab: {}

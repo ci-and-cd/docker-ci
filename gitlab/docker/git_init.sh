@@ -194,8 +194,14 @@ init_git() {
         if [ -n "${GITLAB_SHELL_SSH_PORT}" ]; then
             sed -i -r "s|^(\s+ssh_port:\s+)(.*?)|\1${var_git_ssh_port}|g" /opt/gitlab/embedded/service/gitlab-rails/config/gitlab.yml
         fi
+        while [ -z "$(cat /opt/gitlab/embedded/service/gitlab-rails/config/gitlab.yml | grep "port: ${GIT_HTTP_PORT}")" ]; do
+            echo "GIT_HTTP_PORT not found in /opt/gitlab/embedded/service/gitlab-rails/config/gitlab.yml, reconfigure again."
+            gitlab-ctl reconfigure
+            sleep 15s
+        done
         echo ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> restart >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
         gitlab-ctl restart
+
         #gitlab-rake gitlab:check
         #
         # incorrect

@@ -5,7 +5,12 @@
 
 1. Prepare directories and files on host
 
-  `mkdir -p ${HOME}/.oss/gitlab.local/etc/gitlab ${HOME}/.oss/gitlab.local/var/opt/gitlab ${HOME}/.oss/gitlab.local/var/log/gitlab`
+<del>
+```
+mkdir -p ${HOME}/.oss/gitlab.local/etc/gitlab ${HOME}/.oss/gitlab.local/var/opt/gitlab ${HOME}/.oss/gitlab.local/var/log/gitlab
+chmod -R 777 ${HOME}/.oss/gitlab.local
+```
+</del>
 
 2. Environment variables
 

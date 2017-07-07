@@ -18,9 +18,14 @@ OSS's ci script need the INFRASTRUCTURE_CONF_GIT_TOKEN to access script or confi
 ```
 docker run --privileged=true --rm -v /var/run/docker.sock:/var/run/docker.sock busybox chmod a+rw /var/run/docker.sock
 docker run --privileged=true --rm -v /var/run/docker.sock:/var/run/docker.sock busybox ls -l /var/run/docker.sock
-mkdir -p ${HOME}/.oss/gitlab-runner.local/home/.ssh ${HOME}/.oss/gitlab-runner.local/home/.m2 ${HOME}/.oss/gitlab-runner.local/home/.docker ${HOME}/.oss/gitlab-runner.local/etc
+```
+<del>
+```
+mkdir -p ${HOME}/.oss/gitlab-runner.local/home/gitlab-runner ${HOME}/.oss/gitlab-runner.local/etc/gitlab-runner
 chmod -R 777 ${HOME}/.oss/gitlab-runner.local
 ```
+</del>
+
 Gitlab can not distribute settings and keys like jenkins, need to mount or download manually (e.g. maven's ~/.m2/settings-security.xml or git deploy key).
 
 3. Execute `docker-compose up -d`
@@ -53,6 +58,11 @@ Runner registered successfully. Feel free to start it, but if it's running alrea
 Use `CONFIG_FILE` environment variable specify a configuration file.
 [Official doc for config.toml](https://docs.gitlab.com/runner/configuration/advanced-configuration.html)
 
+```
+# e.g. set concurrent to 3
+docker exec -it gitlab-runner.local /bin/sed -Ei 's#^concurrent = [0-9]+$#concurrent = 3#g' /etc/gitlab-runner/config.toml
+```
+
 ## Note
 - Container instance needs to access docker (/var/run/docker.sock) on host.
 ```
@@ -63,7 +73,9 @@ sudo chmod a+rw /var/run/docker.sock
 
 - You can inspect container by:
 ```
-docker exec -it oss-gitlab-runner cat /home/gitlab-runner/.ssh/config
-docker exec -it oss-gitlab-runner ls -la /home/gitlab-runner/.ssh
-docker exec -it oss-gitlab-runner ls -la /home/gitlab-runner/.docker
+docker exec -it gitlab-runner.local cat /etc/gitlab-runner/config.toml
+docker exec -it gitlab-runner.local cat /home/gitlab-runner/.gitlab-runner/config.toml
+docker exec -it gitlab-runner.local cat /home/gitlab-runner/.ssh/config
+docker exec -it gitlab-runner.local ls -la /home/gitlab-runner/.ssh
+docker exec -it gitlab-runner.local ls -la /home/gitlab-runner/.docker
 ```

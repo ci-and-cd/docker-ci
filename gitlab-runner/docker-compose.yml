@@ -8,18 +8,29 @@ services:
     container_name: ${GITLAT_RUNNER_HOSTNAME:-gitlab-runner.local}
     environment:
     - INFRASTRUCTURE_CONF_GIT_TOKEN=${INFRASTRUCTURE_CONF_GIT_TOKEN:-your_INFRASTRUCTURE_CONF_GIT_TOKEN}
+    external_links:
+    - ${NEXUS3_PROXY_HOSTNAME:-nexus.local}:${FILESERVER_DOMAIN:-fileserver.local}
+    - ${NEXUS3_PROXY_HOSTNAME:-nexus.local}:${DOCKER_MIRROR_DOMAIN:-mirror.docker.local}
+    - ${NEXUS3_PROXY_HOSTNAME:-nexus.local}:${DOCKER_REGISTRY_DOMAIN:-registry.docker.local}
     hostname: ${GITLAT_RUNNER_HOSTNAME:-gitlab-runner.local}
     image: home1oss/gitlab-runner:9.1.1-xenial
-    network_mode: host
+    # host type networking can't be used with links. This would result in undefined behavior
+    #network_mode: host
     restart: always
     volumes:
     - /var/run/docker.sock:/var/run/docker.sock
     # gitlab-runner user's home directory
-    - ${HOME}/.oss/${GITLAT_RUNNER_HOSTNAME:-gitlab-runner.local}/home:/home/gitlab-runner
+    - volume-gitlab-runner-home_gitlab-runner:/home/gitlab-runner
+    #- ${HOME}/.oss/${GITLAT_RUNNER_HOSTNAME:-gitlab-runner.local}/home/gitlab-runner:/home/gitlab-runner
     # gitlab-runner's config directory
-    - ${HOME}/.oss/${GITLAT_RUNNER_HOSTNAME:-gitlab-runner.local}/etc:/etc/gitlab-runner
+    - volume-gitlab-runner-etc_gitlab-runner:/etc/gitlab-runner
+    #- ${HOME}/.oss/${GITLAT_RUNNER_HOSTNAME:-gitlab-runner.local}/etc/gitlab-runner:/etc/gitlab-runner
 
 networks:
   default:
     external:
       name: oss-network
+
+volumes:
+  volume-gitlab-runner-home_gitlab-runner: {}
+  volume-gitlab-runner-etc_gitlab-runner: {}

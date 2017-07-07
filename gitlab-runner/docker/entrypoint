@@ -6,7 +6,14 @@ update_ca() {
   update-ca-certificates --fresh >/dev/null
 }
 
+if [ -f /var/run/docker.sock ]; then
+    chown root:gitlab-runner /var/run/docker.sock
+    chmod 660 /var/run/docker.sock
+fi
+
 chown -R gitlab-runner:gitlab-runner /home/gitlab-runner
+if [ ! -d /home/gitlab-runner/.docker ]; then mkdir -p /home/gitlab-runner/.docker; fi
+if [ ! -d /home/gitlab-runner/.m2 ]; then mkdir -p /home/gitlab-runner/.m2; fi
 if [ ! -d /home/gitlab-runner/.ssh ]; then mkdir -p /home/gitlab-runner/.ssh; fi
 if [ ! -f /home/gitlab-runner/.ssh/config ]; then
     touch /home/gitlab-runner/.ssh/config

@@ -13,7 +13,9 @@ fi
 
 chown -R gitlab-runner:gitlab-runner /home/gitlab-runner
 if [ ! -d /home/gitlab-runner/.docker ]; then mkdir -p /home/gitlab-runner/.docker; fi
+chmod 775 /home/gitlab-runner/.docker
 if [ ! -d /home/gitlab-runner/.m2 ]; then mkdir -p /home/gitlab-runner/.m2; fi
+chmod 775 /home/gitlab-runner/.m2
 if [ ! -d /home/gitlab-runner/.ssh ]; then mkdir -p /home/gitlab-runner/.ssh; fi
 if [ ! -f /home/gitlab-runner/.ssh/config ]; then
     touch /home/gitlab-runner/.ssh/config

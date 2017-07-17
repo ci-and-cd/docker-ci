@@ -35,3 +35,20 @@ chmod -R 777 ${HOME}/.oss/gitlab.local
 
   Export private key
   `docker exec gitlab.local /app/gitlab/entrypoint.sh export_git_admin_key > ~/.ssh/gitlab.local && chmod 600 ~/.ssh/gitlab.local`
+
+## gitlab official docker-compose port and external_url config
+
+see: https://docs.gitlab.com/omnibus/docker/#install-gitlab-using-docker-compose
+
+Example:
+```yaml
+...
+  environment:
+    GITLAB_OMNIBUS_CONFIG: |
+      external_url 'http://gitlab.example.com:9090'
+      gitlab_rails['gitlab_shell_ssh_port'] = 2224
+  ports:
+    - '9090:9090'
+    - '2224:22'
+...
+```

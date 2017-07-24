@@ -18,10 +18,10 @@ chmod -R 777 ${HOME}/.oss/gitlab.local
 
   Skip auto repo init, this works only after initialized at least once
   `export SKIP_AUTO_REPO_INIT=true`
-    
+
   Set http prot (default 10080)
   `export GIT_HTTP_PORT=10080`
-    
+
   Default deploy key is same as configserver's deploy key (/app/gitlab/data/default_deploy_key.pub).
   You can change it by mount a new key and set a new value for GIT_DEPLOY_KEY.
   Access gitlab's group_name/repo_name/settings/repository page to manage Deploy Keys.
@@ -42,7 +42,9 @@ automatically.
 
 ## LDAP
 
-- Edit `/etc/gitlab/gitlab.rb` e.g. `docker exec -it gitlab.internal /bin/bash`
+- Use docker-compose environment variable GITLAB_OMNIBUS_CONFIG to config.
+
+- or Edit `/etc/gitlab/gitlab.rb` e.g. `docker exec -it gitlab.internal /bin/bash`
 
 Make its content like this:
 ```ruby

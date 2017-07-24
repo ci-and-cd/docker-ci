@@ -29,12 +29,84 @@ chmod -R 777 ${HOME}/.oss/gitlab.local
 
 3. Boot
 
-    docker-compose up -d
+    `docker-compose up -d`
+
+It will mount WORKSPACE_ON_HOST (default is ../../) as workspace, find git repo there, create project for them 
+automatically.
+
 
 4. Entry point methods
 
   Export private key
   `docker exec gitlab.local /app/gitlab/entrypoint.sh export_git_admin_key > ~/.ssh/gitlab.local && chmod 600 ~/.ssh/gitlab.local`
+
+## LDAP
+
+- Edit `/etc/gitlab/gitlab.rb` e.g. `docker exec -it gitlab.internal /bin/bash`
+
+Make its content like this:
+```ruby
+        gitlab_rails['ldap_enabled'] = true
+    
+        ###! **remember to close this block with 'EOS' below**
+        ###! **remember to close this block with 'EOS' below**
+        gitlab_rails['ldap_servers'] = YAML.load <<-'EOS'
+           main: # 'main' is the GitLab 'provider ID' of this LDAP server
+             label: 'LDAP'
+             host: 'ldap.internal'
+             port: 389
+             uid: 'cn'
+             method: 'plain' # "tls" or "ssl" or "plain"
+             bind_dn: 'cn=admin,dc=internal'
+             password: 'admin_pass'
+             active_directory: true
+             allow_username_or_email_login: false
+             block_auto_created_users: false
+             base: 'cn=developer,ou=oss,dc=internal'
+             user_filter: ''
+             attributes:
+               username: ['uid', 'userid', 'sAMAccountName']
+               email:    ['mail', 'email', 'userPrincipalName']
+               name:       'cn'
+               first_name: 'givenName'
+               last_name:  'sn'
+        #     ## EE only
+        #     group_base: ''
+        #     admin_group: ''
+        #     sync_ssh_keys: false
+        #
+        #   secondary: # 'secondary' is the GitLab 'provider ID' of second LDAP server
+        #     label: 'LDAP'
+        #     host: '_your_ldap_server'
+        #     port: 389
+        #     uid: 'sAMAccountName'
+        #     method: 'plain' # "tls" or "ssl" or "plain"
+        #     bind_dn: '_the_full_dn_of_the_user_you_will_bind_with'
+        #     password: '_the_password_of_the_bind_user'
+        #     active_directory: true
+        #     allow_username_or_email_login: false
+        #     block_auto_created_users: false
+        #     base: ''
+        #     user_filter: ''
+        #     attributes:
+        #       username: ['uid', 'userid', 'sAMAccountName']
+        #       email:    ['mail', 'email', 'userPrincipalName']
+        #       name:       'cn'
+        #       first_name: 'givenName'
+        #       last_name:  'sn'
+        #     ## EE only
+        #     group_base: ''
+        #     admin_group: ''
+        #     sync_ssh_keys: false
+        EOS
+```
+
+- Restart gitlab `docker-compose restart`
+
+- Verify LDAP config
+![](src/site/markdown/images/gitlab-ldap01.png)
+
+- Sign in as admin and turn off user registration
 
 ## gitlab official docker-compose port and external_url config
 

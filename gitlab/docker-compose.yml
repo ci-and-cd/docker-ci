@@ -19,7 +19,7 @@ services:
     #- ./docker/gitlab_utils.sh:/app/gitlab/gitlab_utils.sh
     # for auto repo init
     - volume-gitlab-git_volume:${GIT_VOLUME:-/app/gitlab/data}
-    - ../../:${GIT_VOLUME:-/app/gitlab/data}/workspace
+    - ${WORKSPACE_ON_HOST:-../../}:${GIT_VOLUME:-/app/gitlab/data}/workspace
     # keep gitlab's data
     - volume-gitlab-data:/data
     - volume-gitlab-etc_gitlab:/etc/gitlab

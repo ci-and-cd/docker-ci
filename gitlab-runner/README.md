@@ -79,3 +79,9 @@ docker exec -it gitlab-runner.local cat /home/gitlab-runner/.ssh/config
 docker exec -it gitlab-runner.local ls -la /home/gitlab-runner/.ssh
 docker exec -it gitlab-runner.local ls -la /home/gitlab-runner/.docker
 ```
+
+
+- ERROR: Uploading artifacts to coordinator... too large archive  id=116 responseStatus=413
+
+https://gitlab.com/gitlab-org/gitlab-ce/issues/20612
+![](src/site/markdown/images/gitlab-runner-max-artifacts-size.png)

@@ -5,14 +5,14 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    container_name: ${GITLAT_RUNNER_HOSTNAME:-gitlab-runner.local}
+    container_name: ${GITLAT_RUNNER_DOMAIN:-gitlab-runner}.${INFRASTRUCTURE:-local}
     environment:
     - INFRASTRUCTURE_CONF_GIT_TOKEN=${INFRASTRUCTURE_CONF_GIT_TOKEN:-your_INFRASTRUCTURE_CONF_GIT_TOKEN}
-    external_links:
-    - ${NEXUS3_PROXY_HOSTNAME:-nexus.local}:${FILESERVER_DOMAIN:-fileserver.local}
-    - ${NEXUS3_PROXY_HOSTNAME:-nexus.local}:${DOCKER_MIRROR_DOMAIN:-mirror.docker.local}
-    - ${NEXUS3_PROXY_HOSTNAME:-nexus.local}:${DOCKER_REGISTRY_DOMAIN:-registry.docker.local}
-    hostname: ${GITLAT_RUNNER_HOSTNAME:-gitlab-runner.local}
+    #external_links:
+    #- ${NEXUS3_PROXY_DOMAIN:-nexus}.${INFRASTRUCTURE:-local}:${FILESERVER_DOMAIN:-fileserver.local}
+    #- ${NEXUS3_PROXY_DOMAIN:-nexus}.${INFRASTRUCTURE:-local}:${DOCKER_MIRROR_DOMAIN:-mirror.docker.local}
+    #- ${NEXUS3_PROXY_DOMAIN:-nexus}.${INFRASTRUCTURE:-local}:${DOCKER_REGISTRY_DOMAIN:-registry.docker.local}
+    hostname: ${GITLAT_RUNNER_DOMAIN:-gitlab-runner}.${INFRASTRUCTURE:-local}
     image: home1oss/gitlab-runner:9.1.1-xenial
     # host type networking can't be used with links. This would result in undefined behavior
     #network_mode: host
@@ -21,10 +21,10 @@ services:
     - /var/run/docker.sock:/var/run/docker.sock
     # gitlab-runner user's home directory
     - volume-gitlab-runner-home_gitlab-runner:/home/gitlab-runner
-    #- ${HOME}/.oss/${GITLAT_RUNNER_HOSTNAME:-gitlab-runner.local}/home/gitlab-runner:/home/gitlab-runner
+    #- ${HOME}/.oss/${GITLAT_RUNNER_DOMAIN:-gitlab-runner}.${INFRASTRUCTURE:-local}/home/gitlab-runner:/home/gitlab-runner
     # gitlab-runner's config directory
     - volume-gitlab-runner-etc_gitlab-runner:/etc/gitlab-runner
-    #- ${HOME}/.oss/${GITLAT_RUNNER_HOSTNAME:-gitlab-runner.local}/etc/gitlab-runner:/etc/gitlab-runner
+    #- ${HOME}/.oss/${GITLAT_RUNNER_DOMAIN:-gitlab-runner}.${INFRASTRUCTURE:-local}/etc/gitlab-runner:/etc/gitlab-runner
 
 networks:
   default:

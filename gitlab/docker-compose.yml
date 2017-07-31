@@ -7,8 +7,8 @@ services:
       dockerfile: Dockerfile
     image: home1oss/gitlab:9.1.4-ce.0
     restart: always
-    container_name: ${GIT_HOSTNAME:-gitlab.local}
-    hostname: ${GIT_HOSTNAME:-gitlab.local}
+    container_name: ${GIT_DOMAIN:-gitlab}.${INFRASTRUCTURE:-local}
+    hostname: ${GIT_DOMAIN:-gitlab}.${INFRASTRUCTURE:-local}
     ports:
     - "${GITLAB_SHELL_SSH_PORT:-20022}:${GITLAB_SHELL_SSH_PORT:-20022}"
     - "${GIT_HTTP_PORT:-10080}:${GIT_HTTP_PORT:-10080}"
@@ -25,9 +25,9 @@ services:
     - volume-gitlab-etc_gitlab:/etc/gitlab
     - volume-gitlab-var_log_gitlab:/var/log/gitlab
     - volume-gitlab-var_opt_gitlab:/var/opt/gitlab
-    #- ${HOME}/.oss/${GIT_HOSTNAME:-gitlab.local}/etc/gitlab:/etc/gitlab
-    #- ${HOME}/.oss/${GIT_HOSTNAME:-gitlab.local}/var/log/gitlab:/var/log/gitlab
-    #- ${HOME}/.oss/${GIT_HOSTNAME:-gitlab.local}/var/opt/gitlab:/var/opt/gitlab
+    #- ${HOME}/.oss/${GIT_DOMAIN:-gitlab}.${INFRASTRUCTURE:-local}/etc/gitlab:/etc/gitlab
+    #- ${HOME}/.oss/${GIT_DOMAIN:-gitlab}.${INFRASTRUCTURE:-local}/var/log/gitlab:/var/log/gitlab
+    #- ${HOME}/.oss/${GIT_DOMAIN:-gitlab}.${INFRASTRUCTURE:-local}/var/opt/gitlab:/var/opt/gitlab
     environment:
     - CONFIGSERVER_WEBHOOK_ENDPOINT=${CONFIGSERVER_WEBHOOK_ENDPOINT:-http://configserver.local:8888/monitor}
     - GITLAB_ROOT_PASSWORD=${GITLAB_ROOT_PASSWORD:-user_pass}
@@ -35,7 +35,7 @@ services:
     # 'admin' is preserved by gitlab
     - GIT_ADMIN_USERNAME=${GIT_ADMIN_USERNAME:-user}
     - GIT_DEPLOY_KEY=${GIT_DEPLOY_KEY:-/app/gitlab/data/default_deploy_key.pub}
-    - GIT_HOSTNAME=${GIT_HOSTNAME:-gitlab.local}
+    - GIT_HOSTNAME=${GIT_DOMAIN:-gitlab}.${INFRASTRUCTURE:-local}
     - GIT_HTTP_PORT=${GIT_HTTP_PORT:-10080}
     - GIT_VOLUME=${GIT_VOLUME:-/app/gitlab/data}
     - GIT_WORKSPACE=${GIT_VOLUME:-/app/gitlab/data}/workspace

@@ -1,2 +1,5 @@
+
 .idea
 *.iml
+
+gitlab-runner/k8s/gitlab-runner-secret.yaml

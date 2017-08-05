@@ -10,9 +10,11 @@ OSS's ci script need the INFRASTRUCTURE_CONF_GIT_TOKEN to access script or confi
 - There are 2 ways to get INFRASTRUCTURE_CONF_GIT_TOKEN from gitlab:
 
   1. From git service page (e.g. gitlab: http(s)://gitlab.local:10080/profile/personal_access_tokens page).
-  2. From cli (e.g. gitlab: `curl --request POST "http://gitlab.local:10080/api/v3/session?login=user&password=user_pass"`).
+  2. From cli (e.g. gitlab: `curl -s --request POST "http://gitlab.internal:10080/api/v3/session?login=user&password=user_pass" | jq -r .private_token`).
 
 - INFRASTRUCTURE_CONF_GIT_TOKEN need to be set before container start by `export INFRASTRUCTURE_CONF_GIT_TOKEN=<your_INFRASTRUCTURE_CONF_GIT_TOKEN>`.
+
+## Start and register a runner on raw machine
 
 2. Prepare directories and files on host
 ```
@@ -28,13 +30,13 @@ chmod -R 777 ${HOME}/.oss/gitlab-runner.local
 
 Gitlab can not distribute settings and keys like jenkins, need to mount or download manually (e.g. maven's ~/.m2/settings-security.xml or git deploy key).
 
-3. Execute `docker-compose up -d`
+3. Run `docker-compose up -d`
 
 4. Find token for runner.
 Shared: Goto admin/runners page (e.g. http(s)://gitlab.local:10080/admin/runners).
 Specific: Goto repo's settings/ci_cd page (e.g. http(s)://gitlab.local:10080/<namespace>/<repo>/settings/ci_cd).
 
-5. Execute `docker exec -it gitlab-runner.local gitlab-runner register` and input following info (in <>).
+5. Run `docker exec -it gitlab-runner.local gitlab-runner register` and input following info (in <>).
 ```
 Please enter the gitlab-ci coordinator URL (e.g. https://gitlab.com/):
 <e.g. http://gitlab.local:10080/>
@@ -54,6 +56,26 @@ Please enter the executor: parallels, virtualbox, shell, ssh, docker+machine, do
 Runner registered successfully. Feel free to start it, but if it's running already the config should be automatically reloaded!
 ```
 
+## Start and register a runner on k8s
+
+2. Prepare directories and files on host
+
+- This should be done by a cron script on host that fix permission of '/var/run/docker.sock' periodically
+
+3. put INFRASTRUCTURE_CONF_GIT_TOKEN into gitlab-runner/k8s/gitlab-runner-secret.yaml by
+- `export INFRASTRUCTURE_CONF_GIT_TOKEN=$(curl -s --request POST "http://gitlab.internal:10080/api/v3/session?login=user&password=user_pass" | jq -r .private_token)`
+- `sed "s#<PUT_BASE64_INFRASTRUCTURE_CONF_GIT_TOKEN_HERE_MANUALLY>#$(echo -n ${INFRASTRUCTURE_CONF_GIT_TOKEN} | base64)#" gitlab-runner-secret.template > gitlab-runner-secret.yaml`
+
+4. Run `kubectl cluster-info` check that kubectl is properly configured
+
+- `kubectl create -f gitlab-runner-secret.yaml` and `kubectl create -f gitlab-runner-deploy.yaml` to deploy
+- `kubectl get po` to see gitlab-runner's pod
+- `kubectl exec -it gitlab-runner-<suffix> bash` to get in gitlab-runner's pod
+- `chown -R gitlab-runner:gitlab-runner /home/gitlab-runner` to ensure directory's permission
+
+5. Run `kubectl exec -it gitlab-runner-<suffix> gitlab-runner register`
+   and input same info as previous section (Start and register a runner on raw machine)
+
 ## Advanced configuration (config.toml)
 Use `CONFIG_FILE` environment variable specify a configuration file.
 [Official doc for config.toml](https://docs.gitlab.com/runner/configuration/advanced-configuration.html)
@@ -64,6 +86,8 @@ docker exec -it gitlab-runner.local /bin/sed -Ei 's#^concurrent = [0-9]+$#concur
 ```
 
 ## Note
+- gitlab-runner's version must compatible with gitlab service.
+
 - Container instance needs to access docker (/var/run/docker.sock) on host.
 ```
 sudo chmod a+rw /var/run/docker.sock

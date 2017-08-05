@@ -26,29 +26,29 @@ spec:
           - name: INFRASTRUCTURE_CONF_GIT_TOKEN
             valueFrom:
               secretKeyRef:
-                name: runner-secret
+                name: gitlab-runner-secret
                 key: INFRASTRUCTURE_CONF_GIT_TOKEN
         volumeMounts:
-          - name: home
-            mountPath: /home/gitlab-runner
-          - name: etc
-            mountPath: /etc/gitlab-runner
-          - name: docker
+          - name: var-run-docker-dot-sock
             mountPath: /var/run/docker.sock
+# Download any file needed by CI, do not mount them
+#          - name: home-gitlab-runner
+#            mountPath: /home/gitlab-runner
+#          - name: etc-gitlab-runner
+#            mountPath: /etc/gitlab-runner
       volumes:
-# 需要换成其他挂载形式，或者需要挂载的内容放到ci脚本中去下载
-        - name: home
-          hostPath:
-            path: /root/gitlab-runner/home
-#          nfs:
-#            server: 10.106.201.232
-#            path: "/root/gitlab-runner"
-        - name: etc
-          hostPath:
-             path: /root/gitlab-runner/etc
-#          nfs:
-#            server: 10.106.201.232
-#            path: "/root/gitlab-runner/etc"
-        - name: docker
+        - name: var-run-docker-dot-sock
           hostPath:
             path: /var/run/docker.sock
+#        - name: home-gitlab-runner
+#          hostPath:
+#            path: /root/.oss/gitlab-runner.internal/home/gitlab-runner
+#          nfs:
+#            server: <host>
+#            path: "/root/gitlab-runner"
+#        - name: etc-gitlab-runner
+#          hostPath:
+#             path: /root/.oss/gitlab-runner.internal/etc/gitlab-runner
+#          nfs:
+#            server: <host>
+#            path: "/root/gitlab-runner/etc"

@@ -4,17 +4,24 @@ metadata:
   name: gitlab-runner
   labels:
     app: gitlab-runner
+
 spec:
+
   strategy:
     type: Recreate
+
+
+
   template:
     metadata:
       labels:
         app: gitlab-runner
+
     spec:
       containers:
       - image: home1oss/gitlab-runner:9.1.1-xenial
         name: gitlab-runner
+
         resources:
           limits:
             cpu: "1"

@@ -64,7 +64,7 @@ Runner registered successfully. Feel free to start it, but if it's running alrea
 
 3. put INFRASTRUCTURE_CONF_GIT_TOKEN into gitlab-runner/k8s/gitlab-runner-secret.yaml by
 - `export INFRASTRUCTURE_CONF_GIT_TOKEN=$(curl -s --request POST "http://gitlab.internal:10080/api/v3/session?login=user&password=user_pass" | jq -r .private_token)`
-- `sed "s#<PUT_BASE64_INFRASTRUCTURE_CONF_GIT_TOKEN_HERE_MANUALLY>#$(echo -n ${INFRASTRUCTURE_CONF_GIT_TOKEN} | base64)#" gitlab-runner-secret.template > gitlab-runner-secret.yaml`
+- `sed "s#<PUT_BASE64_INFRASTRUCTURE_CONF_GIT_TOKEN_HERE_MANUALLY>#$(echo -n ${INFRASTRUCTURE_CONF_GIT_TOKEN} | base64 -w 0)#" gitlab-runner-secret.template > gitlab-runner-secret.yaml`
 
 4. Run `kubectl cluster-info` check that kubectl is properly configured
 

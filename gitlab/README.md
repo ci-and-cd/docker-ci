@@ -64,7 +64,7 @@ Make its content like this:
              active_directory: true
              allow_username_or_email_login: false
              block_auto_created_users: false
-             base: 'cn=developer,ou=oss,dc=internal'
+             base: 'cn=developer,ou=user,dc=internal'
              user_filter: ''
              attributes:
                username: ['uid', 'userid', 'sAMAccountName']

@@ -23,9 +23,9 @@ spec:
         name: gitlab-runner
 
         resources:
-          limits:
-            cpu: "1"
-            memory: 1024Mi
+#          limits:
+#            cpu: "1"
+#            memory: 1024Mi
           requests:
             cpu: "1"
             memory: 1024Mi
@@ -40,22 +40,24 @@ spec:
         volumeMounts:
         - name: var-run-docker-dot-sock
           mountPath: /var/run/docker.sock
-# Download any file needed by CI, do not mount them
-#         - name: home-gitlab-runner
-#           mountPath: /home/gitlab-runner
-#         - name: etc-gitlab-runner
-#           mountPath: /etc/gitlab-runner
+        - name: home-gitlab-runner
+          mountPath: /home/gitlab-runner
+        - name: etc-gitlab-runner
+          mountPath: /etc/gitlab-runner
       volumes:
       - name: var-run-docker-dot-sock
         hostPath:
           path: /var/run/docker.sock
-#      - name: home-gitlab-runner
+      # TODO remote volumes
+      - name: home-gitlab-runner
+        emptyDir: {}
 #        hostPath:
 #          path: /root/.oss/gitlab-runner.internal/home/gitlab-runner
 #        nfs:
 #          server: <host>
 #          path: "/root/gitlab-runner"
-#      - name: etc-gitlab-runner
+      - name: etc-gitlab-runner
+        emptyDir: {}
 #        hostPath:
 #           path: /root/.oss/gitlab-runner.internal/etc/gitlab-runner
 #        nfs:

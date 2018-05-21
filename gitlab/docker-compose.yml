@@ -5,7 +5,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    image: home1oss/gitlab:9.1.4-ce.0
+    image: home1oss/gitlab:10.7.3-ce.0
     restart: always
     container_name: ${GIT_DOMAIN:-gitlab}.${INFRASTRUCTURE:-local}
     hostname: ${GIT_DOMAIN:-gitlab}.${INFRASTRUCTURE:-local}
@@ -21,7 +21,6 @@ services:
     - volume-gitlab-git_volume:${GIT_VOLUME:-/app/gitlab/data}
     - ${WORKSPACE_ON_HOST:-../../}:${GIT_VOLUME:-/app/gitlab/data}/workspace
     # keep gitlab's data
-    - volume-gitlab-data:/data
     - volume-gitlab-etc_gitlab:/etc/gitlab
     - volume-gitlab-var_log_gitlab:/var/log/gitlab
     - volume-gitlab-var_opt_gitlab:/var/opt/gitlab
@@ -49,7 +48,6 @@ networks:
       name: oss-network
 
 volumes:
-  volume-gitlab-data: {}
   volume-gitlab-etc_gitlab: {}
   volume-gitlab-git_volume: {}
   volume-gitlab-var_log_gitlab: {}

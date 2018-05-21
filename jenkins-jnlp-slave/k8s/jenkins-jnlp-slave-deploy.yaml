@@ -1,0 +1,53 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: jenkins-jnlp-slave
+  namespace: default
+
+
+spec:
+  replicas: 1
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 2
+      maxUnavailable: 0
+  template:
+    metadata:
+      labels:
+        app: jenkins-jnlp-slave
+        tag: oss
+    spec:
+      containers:
+      - image: home1oss/jenkins-jnlp-slave:2.62-xenial
+        name: jenkins-jnlp-slave
+
+        resources:
+#          limits:
+#            cpu: "1"
+#            memory: 1024Mi
+          requests:
+            cpu: "1"
+            memory: 1024Mi
+        env:
+        - name: INFRASTRUCTURE_CONF_GIT_TOKEN
+          valueFrom:
+            secretKeyRef:
+              name: jenkins-jnlp-slave-secret
+              key: INFRASTRUCTURE_CONF_GIT_TOKEN
+        - name: JENKINS_URL
+          valueFrom:
+            secretKeyRef:
+              name: jenkins-jnlp-slave-secret
+              key: JENKINS_URL
+        volumeMounts:
+        - name: var-run-docker-dot-sock
+          mountPath: "/var/run/docker.sock"
+        - name: home-jenkins-dot-jenkins
+          mountPath: /home/jenkins/.jenkins
+      volumes:
+      - name: var-run-docker-dot-sock
+        hostPath:
+          path: "/var/run/docker.sock"
+      - name: home-jenkins-dot-jenkins
+        emptyDir: {}

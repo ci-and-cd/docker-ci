@@ -1,0 +1,32 @@
+
+version: '2.1'
+services:
+  jenkins-swarm-slave:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: home1oss/jenkins-swarm-slave:2.2-xenial
+    restart: always
+    command: ["-username", "slave", "-password", "slave_pass", "-executors", "5"]
+    container_name: ${JENKINS_SLAVE_DOMAIN:-jenkins-swarm-slave}.${INFRASTRUCTURE:-local}
+    hostname: ${JENKINS_SLAVE_DOMAIN:-jenkins-swarm-slave}.${INFRASTRUCTURE:-local}
+    #external_links:
+    #- jenkins.${INFRASTRUCTURE:-local}:jenkins.${INFRASTRUCTURE:-local}
+    #- nexus.${INFRASTRUCTURE:-local}:nexus.${INFRASTRUCTURE:-local}
+    #- mvnsite.${INFRASTRUCTURE:-local}:mvnsite.${INFRASTRUCTURE:-local}
+    volumes:
+    - volume-jenkins-swarm-slave:/home/jenkins-slave
+    - /var/run/docker.sock:/var/run/docker.sock
+    environment:
+    - INFRASTRUCTURE_CONF_GIT_TOKEN=${INFRASTRUCTURE_CONF_GIT_TOKEN:-your_INFRASTRUCTURE_CONF_GIT_TOKEN}
+    - JENKINS_PORT_8080_TCP_ADDR=${JENKINS_PORT_8080_TCP_ADDR:-jenkins}.${INFRASTRUCTURE:-local}
+    - JENKINS_PORT_8080_TCP_PORT=${JENKINS_PORT_8080_TCP_PORT:-8080}
+
+
+volumes:
+  volume-jenkins-swarm-slave: {}
+
+networks:
+  default:
+    external:
+      name: oss-network

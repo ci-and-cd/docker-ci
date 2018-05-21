@@ -2,4 +2,10 @@
 .idea
 *.iml
 
-gitlab-runner/k8s/gitlab-runner-secret.yaml
+.DS_Store
+
+/gitlab-runner/k8s/gitlab-runner-secret.yaml
+
+/jenkins/docker/plugins/*.hpi
+/jenkins-jnlp-slave/k8s/jenkins-jnlp-slave-secret.yaml
+/jenkins-swarm-slave/k8s/jenkins-swarm-slave-secret.yaml

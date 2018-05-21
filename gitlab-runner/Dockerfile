@@ -1,10 +1,10 @@
 
-FROM home1oss/ci-ubuntu:16.04
+FROM home1oss/ci-ubuntu:18.04
 
 ADD https://github.com/Yelp/dumb-init/releases/download/v1.2.0/dumb-init_1.2.0_amd64 /usr/bin/dumb-init
 RUN chmod +x /usr/bin/dumb-init
 
-RUN echo "deb https://packages.gitlab.com/runner/gitlab-ci-multi-runner/ubuntu/ xenial main" > /etc/apt/sources.list.d/runner_gitlab-ci-multi-runner.list \
+RUN echo "deb https://packages.gitlab.com/runner/gitlab-ci-multi-runner/ubuntu/ bionic main" > /etc/apt/sources.list.d/runner_gitlab-ci-multi-runner.list \
     && wget -q -O - https://packages.gitlab.com/gpg.key | apt-key add - \
     && apt-get update -y \
     && apt-get install -y gitlab-ci-multi-runner=9.1.1 \

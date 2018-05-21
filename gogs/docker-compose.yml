@@ -1,0 +1,53 @@
+
+# Based on Go Git Service - a self hosted Git service
+# see: https://hub.docker.com/r/gogs/gogs/
+# see: https://github.com/gogits/gogs/blob/master/Dockerfile
+# mkdir -p ${HOME}/private_git
+# docker run --name=private_git -p 20022:22 -p 20080:3000 -v ${HOME}/private_git:/data gogs/gogs:0.9.97;
+# http://gogs.local:20080/install
+
+# registry.docker.local/gogs:0.9.97 is same as gogs/gogs:0.9.97
+# made by `docker tag gogs/gogs:0.9.97 registry.docker.local/gogs:0.9.97; docker push registry.docker.local/gogs:0.9.97`
+
+# export key
+# docker exec gogs.local /app/gogs/entrypoint.sh export_git_admin_key > ~/.ssh/gogs.local
+
+version: '2.1'
+services:
+  gogs:
+    build:
+      args:
+      - build_fileserver=${BUILD_FILESERVER:-http://fileserver.local}
+      context: .
+      dockerfile: Dockerfile
+    image: ${DOCKER_REGISTRY:-registry.docker.local}/gogs:0.9.141
+    restart: always
+    container_name: ${GIT_HOSTNAME:-gogs.local}
+    hostname: ${GIT_HOSTNAME:-gogs.local}
+    ports:
+    - "20022:22"
+    - "20080:3000"
+    volumes:
+    - git-volume:/data
+    - git-volume:${GIT_VOLUME:-/app/gogs/data}
+    - ../../oss-configserver/src/main/resources/default_deploy_key.pub:${GIT_VOLUME:-/app/gogs/data}/${GIT_HOSTNAME:-gogs.local}-deploy.pub
+    - ../../../:${GIT_VOLUME:-/app/gogs/data}/workspace
+    environment:
+    - GIT_VOLUME=${GIT_VOLUME:-/app/gogs/data}
+    - GIT_ADMIN_USERNAME=${GIT_ADMIN_USERNAME:-oss}
+    - GIT_ADMIN_PASSWORD=${GIT_ADMIN_PASSWORD:-oss_pass}
+    - GIT_DEPLOY_KEY=${GIT_VOLUME:-/app/gogs/data}/${GIT_HOSTNAME:-gogs.local}-deploy.pub
+    - GIT_HOSTNAME=${GIT_HOSTNAME:-gogs.local}
+    - GIT_HTTP_PORT=3000
+    - GIT_SSH_PORT=22
+    - GIT_WORKSPACE=${GIT_VOLUME:-/app/gogs/data}/workspace
+    - CONFIGSERVER_WEBHOOK_ENDPOINT=${CONFIGSERVER_WEBHOOK_ENDPOINT:-http://oss-configserver.local:8888/monitor}
+    #external_links:
+    #- oss-configserver.local:oss-configserver.local
+volumes:
+  git-volume: {}
+
+networks:
+  default:
+    external:
+      name: oss-network

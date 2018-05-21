@@ -7,4 +7,4 @@ services:
       dockerfile: Dockerfile
       args:
       - build_fileserver=${BUILD_FILESERVER:-http://fileserver.local}
-    image: home1oss/ci-ubuntu:16.04
+    image: home1oss/ci-ubuntu:18.04

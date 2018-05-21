@@ -1,5 +1,5 @@
 
-FROM home1oss/ci-ubuntu:16.04
+FROM home1oss/ci-ubuntu:18.04
 
 RUN sed -i 's/http:\/\/archive.ubuntu.com\/ubuntu\//http:\/\/mirrors.163.com\/ubuntu\//g' /etc/apt/sources.list
 

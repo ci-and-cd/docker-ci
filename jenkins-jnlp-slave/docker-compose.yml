@@ -5,7 +5,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    image: home1oss/jenkins-jnlp-slave:2.62-xenial
+    image: home1oss/jenkins-jnlp-slave:2.62-bionic
     restart: always
 
     container_name: ${JENKINS_SLAVE_DOMAIN:-jenkins-jnlp-slave}.${INFRASTRUCTURE:-local}

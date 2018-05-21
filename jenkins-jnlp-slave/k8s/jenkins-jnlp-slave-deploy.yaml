@@ -19,7 +19,7 @@ spec:
         tag: oss
     spec:
       containers:
-      - image: home1oss/jenkins-jnlp-slave:2.62-xenial
+      - image: home1oss/jenkins-jnlp-slave:2.62-bionic
         name: jenkins-jnlp-slave
 
         resources:

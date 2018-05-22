@@ -1,5 +1,5 @@
 
-version: '2.1'
+version: '3.6'
 services:
   gitlab:
     build:
@@ -44,8 +44,8 @@ services:
 
 networks:
   default:
-    external:
-      name: oss-network
+    external: true
+    name: oss-network
 
 volumes:
   volume-gitlab-etc_gitlab: {}

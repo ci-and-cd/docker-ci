@@ -94,11 +94,17 @@ print_info() {
 
 # arguments: hostname, http_port, ssh_port
 wait_git_service_up() {
-    if [ ! -f /app/gitlab/wait-for-it.sh ]; then
-        echo "init_git_async /app/gitlab/wait-for-it.sh not found, exit."
+#    if [ ! -f /app/gitlab/wait-for-it.sh ]; then
+#        echo "init_git_async /app/gitlab/wait-for-it.sh not found, exit."
+#        exit 1
+#    else
+#        echo "init_git_async /app/gitlab/wait-for-it.sh found."
+#    fi
+    if [ ! -f /usr/bin/waitforit ]; then
+        echo "init_git_async waitforit not found, exit."
         exit 1
     else
-        echo "init_git_async /app/gitlab/wait-for-it.sh found."
+        echo "init_git_async waitforit found."
     fi
 
     local var_git_hostname="${1}"
@@ -106,11 +112,11 @@ wait_git_service_up() {
     local var_git_ssh_port="${3}"
 
     echo "wait_git_service_up."
-#    waitforit -full-connection=tcp://${var_git_hostname}:${var_git_http_port} -timeout=600
-    /app/gitlab/wait-for-it.sh ${var_git_hostname}:${var_git_ssh_port} -t 600
-    /app/gitlab/wait-for-it.sh ${var_git_hostname}:${var_git_http_port} -t 600
+#    /app/gitlab/wait-for-it.sh ${var_git_hostname}:${var_git_ssh_port} -t 600
+#    /app/gitlab/wait-for-it.sh ${var_git_hostname}:${var_git_http_port} -t 600
+    waitforit -address=tcp://${var_git_hostname}:${var_git_ssh_port} -timeout=600
+    waitforit -address=tcp://${var_git_hostname}:${var_git_http_port} -timeout=600
     sleep 10
-    #waitforit -full-connection=tcp://${var_git_hostname}:${var_git_http_port} -timeout=600 -debug
     echo "wait_git_service_up end."
 }
 

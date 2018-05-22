@@ -1,11 +1,11 @@
 
-version: '2.1'
+version: '3.6'
 services:
   jenkins-master:
     build:
       context: .
       dockerfile: Dockerfile
-    image: home1oss/jenkins:2.60.1-alpine
+    image: home1oss/jenkins:2.60.3-alpine
     restart: always
     container_name: ${JENKINS_DOMAIN:-jenkins}.${INFRASTRUCTURE:-local}
     hostname: ${JENKINS_DOMAIN:-jenkins}.${INFRASTRUCTURE:-local}
@@ -22,5 +22,5 @@ volumes:
 
 networks:
   default:
-    external:
-      name: oss-network
+    external: true
+    name: oss-network

@@ -1,11 +1,11 @@
 
-# from alpine:3.4 or buildpack-deps:jessie-scm (version without -alpine)
-FROM jenkins:2.60.1-alpine
+# from alpine:3.7 or debian:stretch-slim (version without -alpine)
+FROM jenkins:2.60.3-alpine
 
 USER root
 # see: http://wiki.alpinelinux.org/wiki/Setting_the_timezone
-RUN echo "https://mirror.tuna.tsinghua.edu.cn/alpine/v3.4/main" > /etc/apk/repositories && \
-    echo "https://mirror.tuna.tsinghua.edu.cn/alpine/v3.4/community" >> /etc/apk/repositories && \
+RUN echo "https://mirror.tuna.tsinghua.edu.cn/alpine/v3.7/main" > /etc/apk/repositories && \
+    echo "https://mirror.tuna.tsinghua.edu.cn/alpine/v3.7/community" >> /etc/apk/repositories && \
     echo "https://mirror.tuna.tsinghua.edu.cn/alpine/edge/testing/" >> /etc/apk/repositories && \
     apk --update add tzdata && \
     apk add libstdc++ bash aria2 && \

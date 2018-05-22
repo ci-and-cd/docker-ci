@@ -16,7 +16,7 @@ RUN set -ex \
 
 ## locale
 RUN set -ex \
-    && echo $'tzdata tzdata/Areas select Asia\n\
+    && echo 'tzdata tzdata/Areas select Asia\n\
 tzdata tzdata/Zones/Asia select Shanghai\n\n\
 locales locales/locales_to_be_generated    multiselect en_US.UTF-8 UTF-8\n\
 locales locales/default_environment_locale select      en_US.UTF-8\n' > /etc/debconf.txt \
@@ -41,7 +41,7 @@ RUN if [ -z "${build_fileserver}" ]; then build_fileserver="https://nodejs.org";
 ## install node.js for current user
 RUN curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.33.11/install.sh | bash \
     && touch ~/.bash_profile \
-    && echo $'export NVM_DIR="$HOME/.nvm"\n\
+    && echo 'export NVM_DIR="$HOME/.nvm"\n\
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm\n\
 [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion\
     ' >> ~/.bash_profile \
@@ -126,7 +126,7 @@ RUN set -ex \
 COPY docker/docker_ubuntu_gpg /tmp/docker_ubuntu_gpg
 RUN set -ex \
     && groupadd -f docker \
-    && apt-key add /tmp/docker_ubuntu_gpg \
+    && apt-key add /tmp/docker_ubuntu_gpg && rm -f /tmp/docker_ubuntu_gpg \
     && add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) edge" \
     && add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) nightly" \
     && apt-get update -y \
@@ -153,9 +153,10 @@ RUN JAVA_VERSION_MAJOR=8 \
     && JAVA_PACKAGE_DIGEST=512cd62ec5174c3487ac17c61aaa89e8 \
     && if [ -z "${build_fileserver}" ]; then build_fileserver="http://download.oracle.com"; fi \
     && mkdir -p /opt \
-        ${ARIA2C_DOWNLOAD} --header="Cookie: oraclelicense=accept-securebackup-cookie" -d /tmp -o ${JAVA_PACKAGE}-${JAVA_VERSION_MAJOR}u${JAVA_VERSION_MINOR}-linux-x64.tar.gz \
-        ${build_fileserver}/otn-pub/java/jdk/${JAVA_VERSION_MAJOR}u${JAVA_VERSION_MINOR}-b${JAVA_VERSION_BUILD}/${JAVA_PACKAGE_DIGEST}/${JAVA_PACKAGE}-${JAVA_VERSION_MAJOR}u${JAVA_VERSION_MINOR}-linux-x64.tar.gz \
+        && ${ARIA2C_DOWNLOAD} --header="Cookie: oraclelicense=accept-securebackup-cookie" -d /tmp -o ${JAVA_PACKAGE}-${JAVA_VERSION_MAJOR}u${JAVA_VERSION_MINOR}-linux-x64.tar.gz \
+          ${build_fileserver}/otn-pub/java/jdk/${JAVA_VERSION_MAJOR}u${JAVA_VERSION_MINOR}-b${JAVA_VERSION_BUILD}/${JAVA_PACKAGE_DIGEST}/${JAVA_PACKAGE}-${JAVA_VERSION_MAJOR}u${JAVA_VERSION_MINOR}-linux-x64.tar.gz \
         && tar -xzf /tmp/${JAVA_PACKAGE}-${JAVA_VERSION_MAJOR}u${JAVA_VERSION_MINOR}-linux-x64.tar.gz -C /opt \
+        && rm -rf /tmp/jdk* \
         && ln -s /opt/jdk1.${JAVA_VERSION_MAJOR}.0_${JAVA_VERSION_MINOR} /opt/jdk8-oracle \
         && rm -rf /opt/jdk8-oracle/*src.zip \
                /opt/jdk8-oracle/lib/missioncontrol \
@@ -196,11 +197,12 @@ RUN JDK_HOME="/opt/jdk9.0.4-oracle" \
     && mkdir -p /opt \
     && mv /tmp/jdk-9.0.4 ${JDK_HOME} \
     && rm -f ${JDK_HOME}/lib/src.zip \
+    && rm -rf /tmp/jdk* \
     && echo ===== Export jre  ===== \
     && cd /opt \
     && ${JDK_HOME}/bin/jlink -p ${JDK_HOME}/jmods --add-modules java.base,java.sql,java.naming,java.desktop,java.management,java.security.jgss,java.instrument,java.rmi,java.xml.bind,java.xml.ws,java.xml.ws.annotation --output jre9.0.4-oracle \
-    && ln -s ${JRE_HOME} /opt/jre9-oracle \
-    && ln -s "/opt/jre9-oracle/bin/"* "/usr/bin/"
+    && ln -s ${JRE_HOME} /opt/jre9-oracle
+#    && ln -s "/opt/jre9-oracle/bin/"* "/usr/bin/"
 
 ## install graphviz for maven site javadoc
 RUN apt-get update -y \
@@ -232,6 +234,11 @@ RUN MAVEN_VERSION="3.5.3" \
     && ln -sf /opt/gradle-${GRADLE_VERSION} /opt/gradle \
     && rm gradle-${GRADLE_VERSION}-bin.zip
 
+## install rust for current user
+RUN curl -sSf https://sh.rustup.rs > /tmp/install_rustup.sh \
+    && chmod +x /tmp/install_rustup.sh \
+    && /tmp/install_rustup.sh -y
+
 ENV LANG en_US.UTF-8
 ENV LC_ALL en_US.UTF-8
 ENV JAVA_HOME /opt/jdk8-oracle
@@ -239,4 +246,4 @@ ENV M2_HOME /opt/maven
 ENV GRADLE_HOME /opt/gradle
 ENV JAVA_OPTS -Duser.language=zh -Duser.region=CN -Dfile.encoding='UTF-8' -Duser.timezone='Asia/Shanghai'
 ENV NODE_HOME /opt/node
-ENV PATH ${PATH}:${JAVA_HOME}/bin:${NODE_HOME}/bin:${M2_HOME}/bin:${GRADLE_HOME}/bin
+ENV PATH ${JAVA_HOME}/bin:${NODE_HOME}/bin:${M2_HOME}/bin:${GRADLE_HOME}/bin:${PATH}

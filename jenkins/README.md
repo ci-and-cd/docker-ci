@@ -12,5 +12,5 @@ see: http://stackoverflow.com/questions/37358775/jenkins-2-5-installation-error-
 
 ## References
 
-[https://github.com/jenkinsci/docker/blob/41839c39bfcc00d8cbfcca607fdbb69cbfc58d5b/Dockerfile](https://github.com/jenkinsci/docker/blob/41839c39bfcc00d8cbfcca607fdbb69cbfc58d5b/Dockerfile)
+[https://github.com/jenkinsci/docker](https://github.com/jenkinsci/docker)
 [https://hub.docker.com/_/jenkins/](https://hub.docker.com/_/jenkins/)

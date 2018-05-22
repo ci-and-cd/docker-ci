@@ -1,6 +1,6 @@
 
 # from alpine:3.7 or debian:stretch-slim (version without -alpine)
-FROM jenkins:2.60.3-alpine
+FROM jenkins/jenkins:2.124-alpine
 
 USER root
 # see: http://wiki.alpinelinux.org/wiki/Setting_the_timezone

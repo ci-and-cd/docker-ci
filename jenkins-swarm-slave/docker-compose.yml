@@ -12,7 +12,7 @@ services:
     hostname: ${JENKINS_SLAVE_DOMAIN:-jenkins-swarm-slave}.${INFRASTRUCTURE:-local}
     #external_links:
     #- jenkins.${INFRASTRUCTURE:-local}:jenkins.${INFRASTRUCTURE:-local}
-    #- nexus.${INFRASTRUCTURE:-local}:nexus.${INFRASTRUCTURE:-local}
+    #- nexus.${INFRASTRUCTURE:-local}:nexus3.${INFRASTRUCTURE:-local}
     #- mvnsite.${INFRASTRUCTURE:-local}:mvnsite.${INFRASTRUCTURE:-local}
     volumes:
     - volume-jenkins-swarm-slave:/home/jenkins-slave

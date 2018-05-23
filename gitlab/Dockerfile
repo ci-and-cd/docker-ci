@@ -7,7 +7,7 @@ ARG build_fileserver
 ENV ARIA2C_DOWNLOAD aria2c --file-allocation=none -c -x 10 -s 10 -m 0 --console-log-level=notice --log-level=notice --summary-interval=0
 
 RUN set -ex \
-    && echo $'tzdata tzdata/Areas select Asia\n\
+    && echo 'tzdata tzdata/Areas select Asia\n\
 tzdata tzdata/Zones/Asia select Shanghai\n\n\
 locales locales/locales_to_be_generated    multiselect en_US.UTF-8 UTF-8\n\
 locales locales/default_environment_locale select      en_US.UTF-8\n' > /etc/debconf.txt \
@@ -31,7 +31,7 @@ RUN echo ===== Install waitforit ===== \
 
 COPY docker/default_deploy_key.pub /app/gitlab/data/default_deploy_key.pub
 COPY docker/gitlab_utils.sh /app/gitlab/gitlab_utils.sh
-COPY docker/git_init.sh /app/gitlab/git_init.sh
+COPY docker/init_git.sh /app/gitlab/init_git.sh
 COPY docker/entrypoint.sh /app/gitlab/entrypoint.sh
 RUN chmod 755 /app/gitlab/*.sh
 

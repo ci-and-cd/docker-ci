@@ -5,7 +5,7 @@
 mkdir -p /data/ssh
 mkdir -p /data/gitlab
 
-. /app/gitlab/git_init.sh
+. /app/gitlab/init_git.sh
 
 case $1 in
     "init_git")

@@ -84,7 +84,7 @@ print_info() {
     echo "--------------------------------------------------------------------------------"
 }
 
-wait_git_service_up() {
+git_wait_service_up() {
     if [ ! -f /usr/bin/waitforit ]; then
         echo "init_git_async /usr/bin/waitforit not found, exit."
         exit 1
@@ -95,11 +95,11 @@ wait_git_service_up() {
     local var_git_hostname="$(git_hostname)"
     local var_git_http_port="$(git_http_port)"
 
-    echo "wait_git_service_up."
+    echo "git_wait_service_up."
     waitforit -full-connection=tcp://${var_git_hostname}:${var_git_http_port} -timeout=600
     sleep 10
     #waitforit -full-connection=tcp://${var_git_hostname}:${var_git_http_port} -timeout=600 -debug
-    echo "wait_git_service_up end."
+    echo "git_wait_service_up end."
 }
 
 get_git_group_name(){
@@ -129,7 +129,7 @@ init_git() {
 
     init_git_admin_key
     print_info
-    wait_git_service_up
+    git_wait_service_up
 
     git_service_install ${var_git_http_prefix} ${var_git_hostname} ${var_git_http_port} ${var_git_admin_user} ${var_git_admin_passwd}
     #local csrf_token=$(git_service_login ${var_git_http_prefix} ${var_git_admin_user} ${var_git_admin_passwd})

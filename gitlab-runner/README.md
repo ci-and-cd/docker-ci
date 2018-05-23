@@ -7,10 +7,9 @@
 
 OSS's ci script need the INFRASTRUCTURE_CONF_GIT_TOKEN to access script or configuration in internal or private repository.
 
-- There are 2 ways to get INFRASTRUCTURE_CONF_GIT_TOKEN from gitlab:
+- Get INFRASTRUCTURE_CONF_GIT_TOKEN from gitlab:
 
-  1. From git service page (e.g. gitlab: http(s)://gitlab.local:10080/profile/personal_access_tokens page).
-  2. From cli (e.g. gitlab: `curl -s --request POST "http://gitlab.internal:10080/api/v3/session?login=user&password=user_pass" | jq -r .private_token`).
+  From git service page (e.g. gitlab: http(s)://gitlab.local:10080/profile/personal_access_tokens page).
 
 - INFRASTRUCTURE_CONF_GIT_TOKEN need to be set before container start by `export INFRASTRUCTURE_CONF_GIT_TOKEN=<your_INFRASTRUCTURE_CONF_GIT_TOKEN>`.
 
@@ -21,14 +20,9 @@ OSS's ci script need the INFRASTRUCTURE_CONF_GIT_TOKEN to access script or confi
 docker run --privileged=true --rm -v /var/run/docker.sock:/var/run/docker.sock busybox chmod a+rw /var/run/docker.sock
 docker run --privileged=true --rm -v /var/run/docker.sock:/var/run/docker.sock busybox ls -l /var/run/docker.sock
 ```
-<del>
-```
-mkdir -p ${HOME}/.oss/gitlab-runner.local/home/gitlab-runner ${HOME}/.oss/gitlab-runner.local/etc/gitlab-runner
-chmod -R 777 ${HOME}/.oss/gitlab-runner.local
-```
-</del>
 
-Gitlab can not distribute settings and keys like jenkins, need to mount or download manually (e.g. maven's ~/.m2/settings-security.xml or git deploy key).
+Gitlab can not distribute settings and keys like jenkins, need to mount or download manually 
+(e.g. maven's ~/.m2/settings-security.xml or git deploy key).
 
 3. Run `docker-compose up -d`
 
@@ -63,7 +57,7 @@ Runner registered successfully. Feel free to start it, but if it's running alrea
 - This should be done by a cron script on host that fix permission of '/var/run/docker.sock' periodically
 
 3. put INFRASTRUCTURE_CONF_GIT_TOKEN into gitlab-runner/k8s/gitlab-runner-secret.yaml by
-- `export INFRASTRUCTURE_CONF_GIT_TOKEN=$(curl -s --request POST "http://gitlab.internal:10080/api/v3/session?login=user&password=user_pass" | jq -r .private_token)`
+- `export INFRASTRUCTURE_CONF_GIT_TOKEN=<your_INFRASTRUCTURE_CONF_GIT_TOKEN>`
 - `sed "s#<PUT_BASE64_INFRASTRUCTURE_CONF_GIT_TOKEN_HERE_MANUALLY>#$(echo -n ${INFRASTRUCTURE_CONF_GIT_TOKEN} | base64 -w 0)#" gitlab-runner-secret.template > gitlab-runner-secret.yaml`
 
 4. Run `kubectl cluster-info` check that kubectl is properly configured

@@ -22,10 +22,13 @@
 #  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 #  THE SOFTWARE.
 
-# Usage jenkins-slave.sh [options] -url http://jenkins SECRET SLAVE_NAME
+# Usage jenkins-slave.sh [options] -url http://jenkins [SECRET] [AGENT_NAME]
 # Optional environment variables :
 # * JENKINS_TUNNEL : HOST:PORT for a tunnel to route TCP traffic to jenkins host, when jenkins can't be directly accessed over network
 # * JENKINS_URL : alternate jenkins URL
+# * JENKINS_SECRET : agent secret, if not set as an argument
+# * JENKINS_AGENT_NAME : agent name, if not set as an argument
+# * JENKINS_AGENT_WORKDIR : agent work directory, if not set by optional parameter -workDir
 
 mkdir -p /home/jenkins/.jenkins
 
@@ -37,14 +40,29 @@ if [ $# -eq 1 ]; then
 else
 
 	# if -tunnel is not provided try env vars
-	if [[ "$@" != *"-tunnel "* ]]; then
+	case "$@" in
+		*"-tunnel "*) ;;
+		*)
 		if [ ! -z "$JENKINS_TUNNEL" ]; then
 			TUNNEL="-tunnel $JENKINS_TUNNEL"
-		fi
+		fi ;;
+	esac
+
+	# if -workDir is not provided try env vars
+	if [ ! -z "$JENKINS_AGENT_WORKDIR" ]; then
+		case "$@" in
+			*"-workDir"*) echo "Warning: Work directory is defined twice in command-line arguments and the environment variable" ;;
+			*)
+			WORKDIR="-workDir $JENKINS_AGENT_WORKDIR" ;;
+		esac
 	fi
 
-	if [ ! -z "$JENKINS_URL" ]; then
+	if [ -n "$JENKINS_URL" ]; then
 		URL="-url $JENKINS_URL"
+	fi
+
+	if [ -n "$JENKINS_NAME" ]; then
+		JENKINS_AGENT_NAME="$JENKINS_NAME"
 	fi
 
 	if [ -z "$JNLP_PROTOCOL_OPTS" ]; then
@@ -52,6 +70,27 @@ else
 		JNLP_PROTOCOL_OPTS="-Dorg.jenkinsci.remoting.engine.JnlpProtocol3.disabled=true"
 	fi
 
-	#exec java $JAVA_OPTS $JNLP_PROTOCOL_OPTS -cp /usr/share/jenkins/slave.jar hudson.remoting.jnlp.Main -headless $TUNNEL $URL "$@"
-	exec java $JAVA_OPTS $JNLP_PROTOCOL_OPTS -jar /usr/share/jenkins/slave.jar -jnlpUrl $JENKINS_URL "$@"
+	# If both required options are defined, do not pass the parameters
+	OPT_JENKINS_SECRET=""
+	if [ -n "$JENKINS_SECRET" ]; then
+		case "$@" in
+			*"${JENKINS_SECRET}"*) echo "Warning: SECRET is defined twice in command-line arguments and the environment variable" ;;
+			*)
+			OPT_JENKINS_SECRET="${JENKINS_SECRET}" ;;
+		esac
+	fi
+
+	OPT_JENKINS_AGENT_NAME=""
+	if [ -n "$JENKINS_AGENT_NAME" ]; then
+		case "$@" in
+			*"${JENKINS_AGENT_NAME}"*) echo "Warning: AGENT_NAME is defined twice in command-line arguments and the environment variable" ;;
+			*)
+			OPT_JENKINS_AGENT_NAME="${JENKINS_AGENT_NAME}" ;;
+		esac
+	fi
+
+	#TODO: Handle the case when the command-line and Environment variable contain different values.
+	#It is fine it blows up for now since it should lead to an error anyway.
+
+	exec java $JAVA_OPTS $JNLP_PROTOCOL_OPTS -cp /usr/share/jenkins/slave.jar hudson.remoting.jnlp.Main -headless $TUNNEL $URL $WORKDIR $OPT_JENKINS_SECRET $OPT_JENKINS_AGENT_NAME "$@"
 fi

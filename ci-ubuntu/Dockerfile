@@ -237,7 +237,8 @@ RUN MAVEN_VERSION="3.5.3" \
 ## install rust for current user
 RUN curl -sSf https://sh.rustup.rs > /tmp/install_rustup.sh \
     && chmod +x /tmp/install_rustup.sh \
-    && /tmp/install_rustup.sh -y
+    && /tmp/install_rustup.sh -y \
+    && rm -f /tmp/install_rustup.sh
 
 ENV LANG en_US.UTF-8
 ENV LC_ALL en_US.UTF-8

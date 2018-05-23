@@ -19,7 +19,7 @@ spec:
         tag: oss
     spec:
       containers:
-      - image: home1oss/jenkins-swarm-slave:2.2-bionic
+      - image: home1oss/jenkins-swarm-slave:3.12-bionic
         name: jenkins-swarm-slave
         args: ["-username", "slave", "-password", "slave_pass", "-executors", "5"]
         resources:

@@ -1,18 +1,18 @@
 
-version: '2.1'
+version: '3.6'
 services:
   jenkins-jnlp-slave:
     build:
       context: .
       dockerfile: Dockerfile
-    image: home1oss/jenkins-jnlp-slave:2.62-bionic
+    image: home1oss/jenkins-jnlp-slave:3.20-bionic
     restart: always
 
     container_name: ${JENKINS_SLAVE_DOMAIN:-jenkins-jnlp-slave}.${INFRASTRUCTURE:-local}
     hostname: ${JENKINS_SLAVE_DOMAIN:-jenkins-jnlp-slave}.${INFRASTRUCTURE:-local}
     #external_links:
     #- jenkins.${INFRASTRUCTURE:-local}:jenkins.${INFRASTRUCTURE:-local}
-    #- nexus.${INFRASTRUCTURE:-local}:nexus.${INFRASTRUCTURE:-local}
+    #- nexus.${INFRASTRUCTURE:-local}:nexus3.${INFRASTRUCTURE:-local}
     #- mvnsite.${INFRASTRUCTURE:-local}:mvnsite.${INFRASTRUCTURE:-local}
     volumes:
     - volume-jenkins-jnlp-slave:/home/jenkins/.jenkins
@@ -23,10 +23,10 @@ services:
     #- JENKINS_URL=http://jenkins.local:8080/computer/<slave_name>/slave-agent.jnlp -jnlpCredentials <username>:<token>
     - JENKINS_URL=${JENKINS_URL}
 
-volumes:
-  volume-jenkins-jnlp-slave: {}
-
 networks:
   default:
-    external:
-      name: oss-network
+    external: true
+    name: oss-network
+
+volumes:
+  volume-jenkins-jnlp-slave: {}

@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+. /app/gitlab/gitlab_utils.sh
+
 # arguments:
 # returns: configserver_webhook_endpoint
 configserver_webhook_endpoint() {
@@ -46,7 +48,6 @@ get_git_group_name(){
 # returns:
 git_init() {
     echo "git_init $@"
-    . /app/gitlab/gitlab_utils.sh
 
     local var_git_work_space="$(git_workspace)"
 
@@ -167,6 +168,7 @@ git_init() {
     fi
 
     echo "already initialized!" > /app/gitlab/data/.lock_git_init
+    echo "git_init done"
 }
 
 export_git_admin_key() {

@@ -18,7 +18,7 @@ services:
     - volume-jenkins-swarm-slave:/home/jenkins-slave
     - /var/run/docker.sock:/var/run/docker.sock
     environment:
-    - INFRASTRUCTURE_CONF_GIT_TOKEN=${INFRASTRUCTURE_CONF_GIT_TOKEN:-your_INFRASTRUCTURE_CONF_GIT_TOKEN}
+    - CI_INFRA_OPT_GIT_AUTH_TOKEN=${CI_INFRA_OPT_GIT_AUTH_TOKEN:-your_CI_INFRA_OPT_GIT_AUTH_TOKEN}
     - JENKINS_PORT_8080_TCP_ADDR=${JENKINS_PORT_8080_TCP_ADDR:-jenkins}.${INFRASTRUCTURE:-local}
     - JENKINS_PORT_8080_TCP_PORT=${JENKINS_PORT_8080_TCP_PORT:-8080}
 

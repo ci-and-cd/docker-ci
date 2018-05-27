@@ -3,15 +3,15 @@
 
 ## Start and register a runner
 
-1. INFRASTRUCTURE_CONF_GIT_TOKEN
+1. CI_INFRA_OPT_GIT_AUTH_TOKEN
 
-OSS's ci script need the INFRASTRUCTURE_CONF_GIT_TOKEN to access script or configuration in internal or private repository.
+OSS's ci script need the CI_INFRA_OPT_GIT_AUTH_TOKEN to access script or configuration in internal or private repository.
 
-- Get INFRASTRUCTURE_CONF_GIT_TOKEN from gitlab:
+- Get CI_INFRA_OPT_GIT_AUTH_TOKEN from gitlab:
 
   From git service page (e.g. gitlab: http(s)://gitlab.local:10080/profile/personal_access_tokens page).
 
-- INFRASTRUCTURE_CONF_GIT_TOKEN need to be set before container start by `export INFRASTRUCTURE_CONF_GIT_TOKEN=<your_INFRASTRUCTURE_CONF_GIT_TOKEN>`.
+- CI_INFRA_OPT_GIT_AUTH_TOKEN need to be set before container start by `export CI_INFRA_OPT_GIT_AUTH_TOKEN=<your_CI_INFRA_OPT_GIT_AUTH_TOKEN>`.
 
 ## Start and register a runner on raw machine
 
@@ -56,9 +56,9 @@ Runner registered successfully. Feel free to start it, but if it's running alrea
 
 - This should be done by a cron script on host that fix permission of '/var/run/docker.sock' periodically
 
-3. put INFRASTRUCTURE_CONF_GIT_TOKEN into gitlab-runner/k8s/gitlab-runner-secret.yaml by
-- `export INFRASTRUCTURE_CONF_GIT_TOKEN=<your_INFRASTRUCTURE_CONF_GIT_TOKEN>`
-- `sed "s#<PUT_BASE64_INFRASTRUCTURE_CONF_GIT_TOKEN_HERE_MANUALLY>#$(echo -n ${INFRASTRUCTURE_CONF_GIT_TOKEN} | base64 -w 0)#" gitlab-runner-secret.template > gitlab-runner-secret.yaml`
+3. put CI_INFRA_OPT_GIT_AUTH_TOKEN into gitlab-runner/k8s/gitlab-runner-secret.yaml by
+- `export CI_INFRA_OPT_GIT_AUTH_TOKEN=<your_CI_INFRA_OPT_GIT_AUTH_TOKEN>`
+- `sed "s#<PUT_BASE64_CI_INFRA_OPT_GIT_AUTH_TOKEN_HERE_MANUALLY>#$(echo -n ${CI_INFRA_OPT_GIT_AUTH_TOKEN} | base64 -w 0)#" gitlab-runner-secret.template > gitlab-runner-secret.yaml`
 
 4. Run `kubectl cluster-info` check that kubectl is properly configured
 

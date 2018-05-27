@@ -5,11 +5,11 @@
 mkdir -p /data/ssh
 mkdir -p /data/gitlab
 
-. /app/gitlab/init_git.sh
+. /app/gitlab/git_init.sh
 
 case $1 in
-    "init_git")
-        init_git
+    "git_init")
+        git_init
         ;;
     "export_git_admin_key")
         export_git_admin_key
@@ -20,8 +20,8 @@ case $1 in
         ;;
 
     "/assets/wrapper")
-        echo ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> init_git in background, see /var/log/gitlab/init_git.log >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
-        init_git &>/var/log/gitlab/init_git.log &
+        echo ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> git_init in background, see /var/log/gitlab/git_init.log >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
+        git_init &>/var/log/gitlab/git_init.log &
         echo ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> exec $@ >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
         exec "$@"
         ;;
@@ -30,7 +30,7 @@ case $1 in
         echo "command: $@"
         echo -e "Usage: $0 param
     param are follows:
-        init_git
+        git_init
         export_git_admin_key   export git admin user's key (ssh private key)
         export_git_deploy_key  export git project's deploy key (ssh public key)
         args                   pass to service entry point.

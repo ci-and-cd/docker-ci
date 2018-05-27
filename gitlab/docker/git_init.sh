@@ -12,7 +12,7 @@ configserver_webhook_endpoint() {
 
 # arguments:
 # returns:
-init_git_admin_key() {
+git_init_admin_key() {
     if [ ! -f $(git_admin_key) ]; then
         ssh-keygen -t rsa -N "" -C "$(git_admin_user)" -f $(git_admin_key)
         chmod 600 $(git_admin_key)
@@ -44,13 +44,13 @@ get_git_group_name(){
 
 # arguments:
 # returns:
-init_git() {
-    echo "init_git $@"
+git_init() {
+    echo "git_init $@"
     . /app/gitlab/gitlab_utils.sh
 
     local var_git_work_space="$(git_workspace)"
 
-    init_git_admin_key
+    git_init_admin_key
     print_info
 
     local default_git_http_port="80"
@@ -116,7 +116,7 @@ init_git() {
     git_service_ssh_config $(git_hostname) $(git_ssh_port) $(git_admin_key)
 
     # auto push local git repositories (${WORKSPACE_ON_HOST:-../../}) to git service
-    if [ ! -f "/app/gitlab/data/.lock_init_git" ] && [ "${SKIP_AUTO_REPO_INIT}" == "false" ]; then
+    if [ ! -f "/app/gitlab/data/.lock_git_init" ] && [ "${SKIP_AUTO_REPO_INIT}" == "false" ]; then
         # find all repositories that has a '-config' suffix
         local git_repos=($(find ${var_git_work_space} -mindepth 1 -maxdepth 1 -type d | awk -F "${var_git_work_space}/" '{print $2}'))
         #  | grep -E '.+-config.{0}'
@@ -166,7 +166,7 @@ init_git() {
         echo "Skip auto repo init"
     fi
 
-    echo "already initialized!" > /app/gitlab/data/.lock_init_git
+    echo "already initialized!" > /app/gitlab/data/.lock_git_init
 }
 
 export_git_admin_key() {

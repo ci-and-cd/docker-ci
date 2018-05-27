@@ -68,7 +68,7 @@ git_http_prefix() {
     echo "http://$(git_hostname):$(git_http_port)"
 }
 
-# arguments:
+# arguments: host, git_http_port, git_ssh_port
 git_wait_service_up() {
     if [ ! -f /usr/bin/waitforit ]; then
         echo "git_wait_service_up waitforit not found, exit."
@@ -78,10 +78,10 @@ git_wait_service_up() {
     fi
 
     echo "git_wait_service_up."
-#    /app/gitlab/wait-for-it.sh ${var_git_hostname}:${var_git_ssh_port} -t 600
-#    /app/gitlab/wait-for-it.sh ${var_git_hostname}:${var_git_http_port} -t 600
-    waitforit -address=tcp://$(git_hostname):$(git_ssh_port) -timeout=600
-    waitforit -address=tcp://$(git_hostname):$(git_http_port) -timeout=600
+#    /app/gitlab/wait-for-it.sh $1:${var_git_ssh_port} -t 600
+#    /app/gitlab/wait-for-it.sh $1:${var_git_http_port} -t 600
+    waitforit -address=tcp://$1:$2 -timeout=600
+    waitforit -address=tcp://$1:$3 -timeout=600
     sleep 10
     echo "git_wait_service_up end."
 }

@@ -4,7 +4,7 @@ jenkins-swarm-slave
 
 ## Environment variables
 
-- INFRASTRUCTURE_CONF_GIT_TOKEN
+- CI_INFRA_OPT_GIT_AUTH_TOKEN
 > see docker-gitlab/gitlab-runner for more info
 
 ## Note
@@ -17,7 +17,7 @@ sudo chmod a+rw /var/run/docker.sock
 
 ## Auto-provision slaves
 
-- `export INFRASTRUCTURE_CONF_GIT_TOKEN=<your_INFRASTRUCTURE_CONF_GIT_TOKEN>`
+- `export CI_INFRA_OPT_GIT_AUTH_TOKEN=<your_CI_INFRA_OPT_GIT_AUTH_TOKEN>`
 
 - Create a user
 
@@ -30,7 +30,7 @@ sudo chmod a+rw /var/run/docker.sock
 - Generate jenkins-swarm-slave-secret.yaml
 
 ```sh
-sed "s#<PUT_BASE64_INFRASTRUCTURE_CONF_GIT_TOKEN_HERE_MANUALLY>#$(echo -n ${INFRASTRUCTURE_CONF_GIT_TOKEN} | base64 -w 0)#" jenkins-swarm-slave-secret.template \
+sed "s#<PUT_BASE64_CI_INFRA_OPT_GIT_AUTH_TOKEN_HERE_MANUALLY>#$(echo -n ${CI_INFRA_OPT_GIT_AUTH_TOKEN} | base64 -w 0)#" jenkins-swarm-slave-secret.template \
 > jenkins-swarm-slave-secret.yaml
 ```
 

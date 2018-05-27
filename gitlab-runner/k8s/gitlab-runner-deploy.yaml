@@ -30,13 +30,13 @@ spec:
             cpu: "1"
             memory: 1024Mi
         env:
-        - name: INFRASTRUCTURE
+        - name: CI_OPT_INFRASTRUCTURE
           value: internal
-        - name: INFRASTRUCTURE_CONF_GIT_TOKEN
+        - name: CI_INFRA_OPT_GIT_AUTH_TOKEN
           valueFrom:
             secretKeyRef:
               name: gitlab-runner-secret
-              key: INFRASTRUCTURE_CONF_GIT_TOKEN
+              key: CI_INFRA_OPT_GIT_AUTH_TOKEN
         volumeMounts:
         - name: var-run-docker-dot-sock
           mountPath: /var/run/docker.sock

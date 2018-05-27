@@ -5,7 +5,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    image: home1oss/gitlab:10.7.3-ce.0
+    image: home1oss/gitlab:10.8.1-ce.0
     restart: always
     container_name: ${GIT_DOMAIN:-gitlab}.${INFRASTRUCTURE:-local}
     hostname: ${GIT_DOMAIN:-gitlab}.${INFRASTRUCTURE:-local}
@@ -61,7 +61,7 @@ services:
 #    - GITLAB_ROOT_PASSWORD=${GITLAB_ROOT_PASSWORD:-root_pass}
 #    #volumes:
 #    # for script develop & debug
-#    #- ./docker/init_git.sh:/app/gitlab/init_git.sh
+#    #- ./docker/git_init.sh:/app/gitlab/git_init.sh
 #    #- ./docker/entrypoint.sh:/app/gitlab/entrypoint.sh
 #    #- ./docker/gitlab_utils.sh:/app/gitlab/gitlab_utils.sh
 

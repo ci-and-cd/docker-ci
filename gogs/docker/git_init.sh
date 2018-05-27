@@ -60,7 +60,7 @@ configserver_webhook_endpoint() {
 
 # arguments:
 # returns:
-init_git_admin_key() {
+git_init_admin_key() {
     local var_git_admin_key="$(git_admin_key)"
 
     if [ ! -f ${var_git_admin_key} ]; then
@@ -86,10 +86,10 @@ print_info() {
 
 git_wait_service_up() {
     if [ ! -f /usr/bin/waitforit ]; then
-        echo "init_git_async /usr/bin/waitforit not found, exit."
+        echo "git_init_async /usr/bin/waitforit not found, exit."
         exit 1
     else
-        echo "init_git_async /usr/bin/waitforit found."
+        echo "git_init_async /usr/bin/waitforit found."
     fi
 
     local var_git_hostname="$(git_hostname)"
@@ -113,8 +113,8 @@ get_git_group_name(){
 
 # arguments:
 # returns:
-init_git() {
-    echo "init_git $@"
+git_init() {
+    echo "git_init $@"
     . gogs_utils.sh
 
     local var_git_hostname="$(git_hostname)"
@@ -127,7 +127,7 @@ init_git() {
     local var_git_admin_passwd="$(git_admin_passwd)"
     local var_configserver_webhook_endpoint="$(configserver_webhook_endpoint)"
 
-    init_git_admin_key
+    git_init_admin_key
     print_info
     git_wait_service_up
 
@@ -185,6 +185,8 @@ init_git() {
         echo "git_deploy_key_file not found."
         exit 1
     fi
+    
+    echo "git_init done"
 }
 
 export_git_admin_key() {

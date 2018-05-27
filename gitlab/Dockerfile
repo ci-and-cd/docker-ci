@@ -1,5 +1,5 @@
 
-FROM gitlab/gitlab-ce:10.7.3-ce.0
+FROM gitlab/gitlab-ce:10.8.1-ce.0
 
 VOLUME ["/app/gitlab/data"]
 
@@ -31,7 +31,7 @@ RUN echo ===== Install waitforit ===== \
 
 COPY docker/default_deploy_key.pub /app/gitlab/data/default_deploy_key.pub
 COPY docker/gitlab_utils.sh /app/gitlab/gitlab_utils.sh
-COPY docker/init_git.sh /app/gitlab/init_git.sh
+COPY docker/git_init.sh /app/gitlab/git_init.sh
 COPY docker/entrypoint.sh /app/gitlab/entrypoint.sh
 RUN chmod 755 /app/gitlab/*.sh
 

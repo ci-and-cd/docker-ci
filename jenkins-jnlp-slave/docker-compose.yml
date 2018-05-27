@@ -18,7 +18,7 @@ services:
     - volume-jenkins-jnlp-slave:/home/jenkins/.jenkins
     - /var/run/docker.sock:/var/run/docker.sock
     environment:
-    - INFRASTRUCTURE_CONF_GIT_TOKEN=${INFRASTRUCTURE_CONF_GIT_TOKEN:-your_INFRASTRUCTURE_CONF_GIT_TOKEN}
+    - CI_INFRA_OPT_GIT_AUTH_TOKEN=${CI_INFRA_OPT_GIT_AUTH_TOKEN:-your_CI_INFRA_OPT_GIT_AUTH_TOKEN}
     #- JENKINS_URL=http://jenkins.local:8080 <secret> <slave_name>
     #- JENKINS_URL=http://jenkins.local:8080/computer/<slave_name>/slave-agent.jnlp -jnlpCredentials <username>:<token>
     - JENKINS_URL=${JENKINS_URL}

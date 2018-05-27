@@ -30,11 +30,11 @@ spec:
             cpu: "1"
             memory: 1024Mi
         env:
-        - name: INFRASTRUCTURE_CONF_GIT_TOKEN
+        - name: CI_INFRA_OPT_GIT_AUTH_TOKEN
           valueFrom:
             secretKeyRef:
               name: jenkins-jnlp-slave-secret
-              key: INFRASTRUCTURE_CONF_GIT_TOKEN
+              key: CI_INFRA_OPT_GIT_AUTH_TOKEN
         - name: JENKINS_URL
           valueFrom:
             secretKeyRef:

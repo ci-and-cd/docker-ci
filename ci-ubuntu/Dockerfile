@@ -146,62 +146,67 @@ RUN set -ex \
 #curl -jksSLH "Cookie: oraclelicense=accept-securebackup-cookie" \
 #    ${build_fileserver}/otn-pub/java/jdk/${JAVA_VERSION_MAJOR}u${JAVA_VERSION_MINOR}-b${JAVA_VERSION_BUILD}/${JAVA_PACKAGE_DIGEST}/${JAVA_PACKAGE}-${JAVA_VERSION_MAJOR}u${JAVA_VERSION_MINOR}-linux-x64.tar.gz \
 #    | tar -xzf - -C /opt \
+ENV JDK8_HOME /Library/Java/JavaVirtualMachines/jdk1.8.0_171.jdk/Contents/Home
 RUN JAVA_VERSION_MAJOR=8 \
     && JAVA_VERSION_MINOR=171 \
     && JAVA_VERSION_BUILD=11 \
     && JAVA_PACKAGE=jdk \
     && JAVA_PACKAGE_DIGEST=512cd62ec5174c3487ac17c61aaa89e8 \
     && if [ -z "${build_fileserver}" ]; then build_fileserver="http://download.oracle.com"; fi \
-    && mkdir -p /opt \
+    && mkdir -p $(dirname ${JDK8_HOME}) \
         && ${ARIA2C_DOWNLOAD} --header="Cookie: oraclelicense=accept-securebackup-cookie" -d /tmp -o ${JAVA_PACKAGE}-${JAVA_VERSION_MAJOR}u${JAVA_VERSION_MINOR}-linux-x64.tar.gz \
           ${build_fileserver}/otn-pub/java/jdk/${JAVA_VERSION_MAJOR}u${JAVA_VERSION_MINOR}-b${JAVA_VERSION_BUILD}/${JAVA_PACKAGE_DIGEST}/${JAVA_PACKAGE}-${JAVA_VERSION_MAJOR}u${JAVA_VERSION_MINOR}-linux-x64.tar.gz \
-        && tar -xzf /tmp/${JAVA_PACKAGE}-${JAVA_VERSION_MAJOR}u${JAVA_VERSION_MINOR}-linux-x64.tar.gz -C /opt \
+        && tar -xzf /tmp/${JAVA_PACKAGE}-${JAVA_VERSION_MAJOR}u${JAVA_VERSION_MINOR}-linux-x64.tar.gz -C $(dirname ${JDK8_HOME}) \
         && rm -rf /tmp/jdk* \
-        && ln -s /opt/jdk1.${JAVA_VERSION_MAJOR}.0_${JAVA_VERSION_MINOR} /opt/jdk8-oracle \
-        && rm -rf /opt/jdk8-oracle/*src.zip \
-               /opt/jdk8-oracle/lib/missioncontrol \
-               /opt/jdk8-oracle/lib/visualvm \
-               /opt/jdk8-oracle/lib/*javafx* \
-               /opt/jdk8-oracle/jre/lib/plugin.jar \
-               /opt/jdk8-oracle/jre/lib/ext/jfxrt.jar \
-               /opt/jdk8-oracle/jre/bin/javaws \
-               /opt/jdk8-oracle/jre/lib/javaws.jar \
-               /opt/jdk8-oracle/jre/lib/desktop \
-               /opt/jdk8-oracle/jre/plugin \
-               /opt/jdk8-oracle/jre/lib/deploy* \
-               /opt/jdk8-oracle/jre/lib/*javafx* \
-               /opt/jdk8-oracle/jre/lib/*jfx* \
-               /opt/jdk8-oracle/jre/lib/amd64/libdecora_sse.so \
-               /opt/jdk8-oracle/jre/lib/amd64/libprism_*.so \
-               /opt/jdk8-oracle/jre/lib/amd64/libfxplugins.so \
-               /opt/jdk8-oracle/jre/lib/amd64/libglass.so \
-               /opt/jdk8-oracle/jre/lib/amd64/libgstreamer-lite.so \
-               /opt/jdk8-oracle/jre/lib/amd64/libjavafx*.so \
-               /opt/jdk8-oracle/jre/lib/amd64/libjfx*.so \
+        && mv $(dirname ${JDK8_HOME})/jdk1.${JAVA_VERSION_MAJOR}.0_${JAVA_VERSION_MINOR} ${JDK8_HOME} \
+        && mkdir -p /opt \
+        && ln -s ${JDK8_HOME} /opt/jdk8-oracle \
+        && rm -rf ${JDK8_HOME}/*src.zip \
+               ${JDK8_HOME}/lib/missioncontrol \
+               ${JDK8_HOME}/lib/visualvm \
+               ${JDK8_HOME}/lib/*javafx* \
+               ${JDK8_HOME}/jre/lib/plugin.jar \
+               ${JDK8_HOME}/jre/lib/ext/jfxrt.jar \
+               ${JDK8_HOME}/jre/bin/javaws \
+               ${JDK8_HOME}/jre/lib/javaws.jar \
+               ${JDK8_HOME}/jre/lib/desktop \
+               ${JDK8_HOME}/jre/plugin \
+               ${JDK8_HOME}/jre/lib/deploy* \
+               ${JDK8_HOME}/jre/lib/*javafx* \
+               ${JDK8_HOME}/jre/lib/*jfx* \
+               ${JDK8_HOME}/jre/lib/amd64/libdecora_sse.so \
+               ${JDK8_HOME}/jre/lib/amd64/libprism_*.so \
+               ${JDK8_HOME}/jre/lib/amd64/libfxplugins.so \
+               ${JDK8_HOME}/jre/lib/amd64/libglass.so \
+               ${JDK8_HOME}/jre/lib/amd64/libgstreamer-lite.so \
+               ${JDK8_HOME}/jre/lib/amd64/libjavafx*.so \
+               ${JDK8_HOME}/jre/lib/amd64/libjfx*.so \
     && POLICY_DIR="UnlimitedJCEPolicyJDK${JAVA_VERSION_MAJOR}" \
     && curl -s -k -L -C - -b "oraclelicense=accept-securebackup-cookie" \
     ${build_fileserver}/otn-pub/java/jce/${JAVA_VERSION_MAJOR}/jce_policy-${JAVA_VERSION_MAJOR}.zip > policy.zip \
     && unzip policy.zip \
-    && cp -f ${POLICY_DIR}/US_export_policy.jar /opt/jdk8-oracle/jre/lib/security/US_export_policy.jar \
-    && cp -f ${POLICY_DIR}/local_policy.jar /opt/jdk8-oracle/jre/lib/security/local_policy.jar \
+    && cp -f ${POLICY_DIR}/US_export_policy.jar ${JDK8_HOME}/jre/lib/security/US_export_policy.jar \
+    && cp -f ${POLICY_DIR}/local_policy.jar ${JDK8_HOME}/jre/lib/security/local_policy.jar \
     && rm -rf ${POLICY_DIR} \
     && rm -f policy.zip
 
 ## install jdk9
-RUN JDK_HOME="/opt/jdk9.0.4-oracle" \
-    && JRE_HOME="/opt/jre9.0.4-oracle" \
+RUN JDK9_HOME="/Library/Java/JavaVirtualMachines/jdk-9.0.4.jdk/Contents/Home" \
+    && JRE9_HOME="/Library/Java/JavaVirtualMachines/jdk-9.0.4.jre/Contents/Home" \
     && echo ===== Install JDK9 ===== \
     && cd /tmp \
     && ${ARIA2C_DOWNLOAD} --header="Cookie: oraclelicense=accept-securebackup-cookie" -d /tmp -o "jdk-9.0.4_linux-x64_bin.tar.gz" "http://o9wbz99tz.bkt.clouddn.com/otn/java/jdk/9.0.4+11/c2514751926b4512b076cc82f959763f/jdk-9.0.4_linux-x64_bin.tar.gz" \
     && tar -xzf jdk-9.0.4_linux-x64_bin.tar.gz \
-    && mkdir -p /opt \
-    && mv /tmp/jdk-9.0.4 ${JDK_HOME} \
-    && rm -f ${JDK_HOME}/lib/src.zip \
+    && mkdir -p $(dirname ${JDK9_HOME}) \
+    && mv /tmp/jdk-9.0.4 ${JDK9_HOME} \
+    && rm -f ${JDK9_HOME}/lib/src.zip \
     && rm -rf /tmp/jdk* \
     && echo ===== Export jre  ===== \
-    && cd /opt \
-    && ${JDK_HOME}/bin/jlink -p ${JDK_HOME}/jmods --add-modules java.base,java.sql,java.naming,java.desktop,java.management,java.security.jgss,java.instrument,java.rmi,java.xml.bind,java.xml.ws,java.xml.ws.annotation --output jre9.0.4-oracle \
-    && ln -s ${JRE_HOME} /opt/jre9-oracle
+    && cd $(dirname ${JDK9_HOME}) \
+    && ${JDK9_HOME}/bin/jlink -p ${JDK9_HOME}/jmods --add-modules java.base,java.sql,java.naming,java.desktop,java.management,java.security.jgss,java.instrument,java.rmi,java.xml.bind,java.xml.ws,java.xml.ws.annotation --output jre9-oracle \
+    && mkdir -p $(dirname ${JRE9_HOME}) \
+    && mv jre9-oracle ${JRE9_HOME} \
+    && ln -s ${JRE9_HOME} /opt/jre9-oracle
 #    && ln -s "/opt/jre9-oracle/bin/"* "/usr/bin/"
 
 ## install graphviz for maven site javadoc

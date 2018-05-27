@@ -185,7 +185,7 @@ git_init() {
         echo "git_deploy_key_file not found."
         exit 1
     fi
-    
+
     echo "git_init done"
 }
 

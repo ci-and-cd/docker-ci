@@ -5,7 +5,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    image: home1oss/jenkins-swarm-slave:3.12-bionic
+    image: cirepo/jenkins-swarm-slave:3.12-bionic
     restart: always
     command: ["-username", "slave", "-password", "slave_pass", "-executors", "5"]
     container_name: ${JENKINS_SLAVE_DOMAIN:-jenkins-swarm-slave}.${INFRASTRUCTURE:-local}

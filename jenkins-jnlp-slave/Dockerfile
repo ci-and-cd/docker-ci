@@ -1,5 +1,5 @@
 
-FROM home1oss/ci-ubuntu:18.04
+FROM cirepo/ci-ubuntu:18.04
 
 # install netstat to allow connection health check with
 # netstat -tan | grep ESTABLISHED

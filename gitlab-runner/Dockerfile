@@ -1,5 +1,5 @@
 
-FROM home1oss/ci-ubuntu:18.04
+FROM cirepo/ci-ubuntu:18.04
 
 #wget -q -O - https://packages.gitlab.com/gpg.key | apt-key add - \
 # then

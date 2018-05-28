@@ -13,7 +13,7 @@ services:
     #- ${NEXUS3_PROXY_DOMAIN:-nexus3}.${INFRASTRUCTURE:-local}:${DOCKER_MIRROR_DOMAIN:-mirror.docker.local}
     #- ${NEXUS3_PROXY_DOMAIN:-nexus3}.${INFRASTRUCTURE:-local}:${DOCKER_REGISTRY_DOMAIN:-registry.docker.local}
     hostname: ${GITLAT_RUNNER_DOMAIN:-gitlab-runner}.${INFRASTRUCTURE:-local}
-    image: home1oss/gitlab-runner:10.5.0-bionic
+    image: cirepo/gitlab-runner:10.5.0-bionic
     # host type networking can't be used with links. This would result in undefined behavior
     #network_mode: host
     restart: always

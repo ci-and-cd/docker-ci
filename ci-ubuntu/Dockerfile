@@ -146,7 +146,7 @@ RUN set -ex \
 #curl -jksSLH "Cookie: oraclelicense=accept-securebackup-cookie" \
 #    ${build_fileserver}/otn-pub/java/jdk/${JAVA_VERSION_MAJOR}u${JAVA_VERSION_MINOR}-b${JAVA_VERSION_BUILD}/${JAVA_PACKAGE_DIGEST}/${JAVA_PACKAGE}-${JAVA_VERSION_MAJOR}u${JAVA_VERSION_MINOR}-linux-x64.tar.gz \
 #    | tar -xzf - -C /opt \
-ENV JDK8_HOME /Library/Java/JavaVirtualMachines/jdk1.8.0_171.jdk/Contents/Home
+ENV JDK8_HOME /usr/lib/jvm/java-8-oracle
 RUN JAVA_VERSION_MAJOR=8 \
     && JAVA_VERSION_MINOR=171 \
     && JAVA_VERSION_BUILD=11 \
@@ -159,8 +159,8 @@ RUN JAVA_VERSION_MAJOR=8 \
         && tar -xzf /tmp/${JAVA_PACKAGE}-${JAVA_VERSION_MAJOR}u${JAVA_VERSION_MINOR}-linux-x64.tar.gz -C $(dirname ${JDK8_HOME}) \
         && rm -rf /tmp/jdk* \
         && mv $(dirname ${JDK8_HOME})/jdk1.${JAVA_VERSION_MAJOR}.0_${JAVA_VERSION_MINOR} ${JDK8_HOME} \
-        && mkdir -p /opt \
-        && ln -s ${JDK8_HOME} /opt/jdk8-oracle \
+        && mkdir -p /Library/Java/JavaVirtualMachines/jdk1.${JAVA_VERSION_MAJOR}.0_${JAVA_VERSION_MINOR}.jdk/Contents \
+        && ln -s ${JDK8_HOME} /Library/Java/JavaVirtualMachines/jdk1.${JAVA_VERSION_MAJOR}.0_${JAVA_VERSION_MINOR}.jdk/Contents/Home \
         && rm -rf ${JDK8_HOME}/*src.zip \
                ${JDK8_HOME}/lib/missioncontrol \
                ${JDK8_HOME}/lib/visualvm \
@@ -191,9 +191,9 @@ RUN JAVA_VERSION_MAJOR=8 \
     && rm -f policy.zip
 
 ## install jdk9
-RUN JDK9_HOME="/Library/Java/JavaVirtualMachines/jdk-9.0.4.jdk/Contents/Home" \
-    && JRE9_HOME="/Library/Java/JavaVirtualMachines/jdk-9.0.4.jre/Contents/Home" \
-    && echo ===== Install JDK9 ===== \
+ENV JDK9_HOME /usr/lib/jvm/java-9-oracle
+ENV JRE9_HOME /usr/lib/jvm/java-9-oracle-jre
+RUN echo ===== Install JDK9 ===== \
     && cd /tmp \
     && ${ARIA2C_DOWNLOAD} --header="Cookie: oraclelicense=accept-securebackup-cookie" -d /tmp -o "jdk-9.0.4_linux-x64_bin.tar.gz" "http://o9wbz99tz.bkt.clouddn.com/otn/java/jdk/9.0.4+11/c2514751926b4512b076cc82f959763f/jdk-9.0.4_linux-x64_bin.tar.gz" \
     && tar -xzf jdk-9.0.4_linux-x64_bin.tar.gz \
@@ -201,13 +201,16 @@ RUN JDK9_HOME="/Library/Java/JavaVirtualMachines/jdk-9.0.4.jdk/Contents/Home" \
     && mv /tmp/jdk-9.0.4 ${JDK9_HOME} \
     && rm -f ${JDK9_HOME}/lib/src.zip \
     && rm -rf /tmp/jdk* \
+    && mkdir -p /Library/Java/JavaVirtualMachines/jdk-9.0.4.jdk/Contents \
+    && ln -s ${JDK9_HOME} /Library/Java/JavaVirtualMachines/jdk-9.0.4.jdk/Contents/Home \
     && echo ===== Export jre  ===== \
     && cd $(dirname ${JDK9_HOME}) \
-    && ${JDK9_HOME}/bin/jlink -p ${JDK9_HOME}/jmods --add-modules java.base,java.sql,java.naming,java.desktop,java.management,java.security.jgss,java.instrument,java.rmi,java.xml.bind,java.xml.ws,java.xml.ws.annotation --output jre9-oracle \
+    && ${JDK9_HOME}/bin/jlink -p ${JDK9_HOME}/jmods --add-modules java.base,java.sql,java.naming,java.desktop,java.management,java.security.jgss,java.instrument,java.rmi,java.xml.bind,java.xml.ws,java.xml.ws.annotation --output java-9-oracle-jre \
     && mkdir -p $(dirname ${JRE9_HOME}) \
-    && mv jre9-oracle ${JRE9_HOME} \
-    && ln -s ${JRE9_HOME} /opt/jre9-oracle
-#    && ln -s "/opt/jre9-oracle/bin/"* "/usr/bin/"
+    && mv java-9-oracle-jre ${JRE9_HOME} \
+    && mkdir -p /Library/Java/JavaVirtualMachines/jre-9.0.4.jre/Contents \
+    && ln -s ${JRE9_HOME} /Library/Java/JavaVirtualMachines/jre-9.0.4.jre/Contents/Home
+#    && ln -s "${JRE9_HOME}/bin/"* "/usr/bin/"
 
 ## install graphviz for maven site javadoc
 RUN apt-get update -y \
@@ -247,7 +250,7 @@ RUN curl -sSf https://sh.rustup.rs > /tmp/install_rustup.sh \
 
 ENV LANG en_US.UTF-8
 ENV LC_ALL en_US.UTF-8
-ENV JAVA_HOME /opt/jdk8-oracle
+ENV JAVA_HOME ${JDK8_HOME}
 ENV M2_HOME /opt/maven
 ENV GRADLE_HOME /opt/gradle
 ENV JAVA_OPTS -Duser.language=zh -Duser.region=CN -Dfile.encoding='UTF-8' -Duser.timezone='Asia/Shanghai'

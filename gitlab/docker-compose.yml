@@ -20,9 +20,9 @@ services:
     - volume-gitlab-etc_gitlab:/etc/gitlab
     - volume-gitlab-var_log_gitlab:/var/log/gitlab
     - volume-gitlab-var_opt_gitlab:/var/opt/gitlab
-    #- ${HOME}/.oss/${GIT_DOMAIN:-gitlab}.${INFRASTRUCTURE:-local}/etc/gitlab:/etc/gitlab
-    #- ${HOME}/.oss/${GIT_DOMAIN:-gitlab}.${INFRASTRUCTURE:-local}/var/log/gitlab:/var/log/gitlab
-    #- ${HOME}/.oss/${GIT_DOMAIN:-gitlab}.${INFRASTRUCTURE:-local}/var/opt/gitlab:/var/opt/gitlab
+    #- ${HOME}/.ci-and-cd/${GIT_DOMAIN:-gitlab}.${INFRASTRUCTURE:-local}/etc/gitlab:/etc/gitlab
+    #- ${HOME}/.ci-and-cd/${GIT_DOMAIN:-gitlab}.${INFRASTRUCTURE:-local}/var/log/gitlab:/var/log/gitlab
+    #- ${HOME}/.ci-and-cd/${GIT_DOMAIN:-gitlab}.${INFRASTRUCTURE:-local}/var/opt/gitlab:/var/opt/gitlab
     environment:
     - CONFIGSERVER_WEBHOOK_ENDPOINT=${CONFIGSERVER_WEBHOOK_ENDPOINT:-http://oss-configserver.local:8888/monitor}
     - GITLAB_ROOT_PASSWORD=${GITLAB_ROOT_PASSWORD:-root_pass}

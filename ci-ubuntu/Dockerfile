@@ -206,8 +206,6 @@ RUN echo ===== Install JDK9 ===== \
     && echo ===== Export jre  ===== \
     && cd $(dirname ${JDK9_HOME}) \
     && ${JDK9_HOME}/bin/jlink -p ${JDK9_HOME}/jmods --add-modules java.base,java.sql,java.naming,java.desktop,java.management,java.security.jgss,java.instrument,java.rmi,java.xml.bind,java.xml.ws,java.xml.ws.annotation --output java-9-oracle-jre \
-    && mkdir -p $(dirname ${JRE9_HOME}) \
-    && mv java-9-oracle-jre ${JRE9_HOME} \
     && mkdir -p /Library/Java/JavaVirtualMachines/jre-9.0.4.jre/Contents \
     && ln -s ${JRE9_HOME} /Library/Java/JavaVirtualMachines/jre-9.0.4.jre/Contents/Home
 #    && ln -s "${JRE9_HOME}/bin/"* "/usr/bin/"

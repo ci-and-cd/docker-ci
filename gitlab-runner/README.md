@@ -30,7 +30,7 @@ Gitlab can not distribute settings and keys like jenkins, need to mount or downl
 Shared: Goto admin/runners page (e.g. http(s)://gitlab.local:10080/admin/runners).
 Specific: Goto repo's settings/ci_cd page (e.g. http(s)://gitlab.local:10080/<namespace>/<repo>/settings/ci_cd).
 
-5. Run `docker exec -it gitlab-runner.local gitlab-runner register` and input following info (in <>).
+5. Run `docker exec -it gitlab-runner.local sudo gitlab-runner register` and input following info (in <>).
 ```
 Please enter the gitlab-ci coordinator URL (e.g. https://gitlab.com/):
 <e.g. http://gitlab.local:10080/>

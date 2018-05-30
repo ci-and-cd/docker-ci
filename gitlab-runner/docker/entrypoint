@@ -42,4 +42,4 @@ if [ -f "${CA_CERTIFICATES_PATH}" ]; then
 fi
 
 # launch gitlab-ci-multi-runner passing all arguments
-exec gitlab-ci-multi-runner "$@"
+exec sudo gitlab-ci-multi-runner "$@"

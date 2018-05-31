@@ -11,22 +11,21 @@ if [ -f /var/run/docker.sock ]; then
     chmod 660 /var/run/docker.sock
 fi
 
-if [ ! -d /home/gitlab-runner/.docker ]; then mkdir -p /home/gitlab-runner/.docker; fi
-if [ ! -d /home/gitlab-runner/.m2 ]; then mkdir -p /home/gitlab-runner/.m2; fi
-if [ ! -d /home/gitlab-runner/.ssh ]; then mkdir -p /home/gitlab-runner/.ssh; fi
-chown -R gitlab-runner:gitlab-runner /home/gitlab-runner
-chmod 775 /home/gitlab-runner/.docker
-chmod 775 /home/gitlab-runner/.m2
-chmod 775 /home/gitlab-runner/.ssh
+if [ ! -d ~/.docker ]; then mkdir -p ~/.docker; chmod 775 ~/.docker; fi
+if [ ! -d ~/.m2 ]; then mkdir -p ~/.m2; chmod 775 ~/.m2; fi
+if [ ! -d ~/.ssh ]; then mkdir -p ~/.ssh; chmod 775 ~/.ssh; fi
+if [ ! -d ~/.gnupg ]; then mkdir -p ~/.gnupg; chmod 775 ~/.gnupg; fi
 
-if [ ! -f /home/gitlab-runner/.ssh/config ]; then
-    touch /home/gitlab-runner/.ssh/config
+if [ ! -f ~/.ssh/config ]; then
+    touch ~/.ssh/config
     echo -e "Host *
     StrictHostKeyChecking no
-    UserKnownHostsFile /dev/null" > /home/gitlab-runner/.ssh/config
+    UserKnownHostsFile /dev/null" > ~/.ssh/config
 fi
-chmod 700 /home/gitlab-runner/.ssh
-chmod 644 /home/gitlab-runner/.ssh/config
+chmod 700 ~/.ssh
+chmod 644 ~/.ssh/config
+
+chown -R gitlab-runner:gitlab-runner ~
 
 # gitlab-runner's config directory
 CONFIG_DIR="/etc/gitlab-runner"

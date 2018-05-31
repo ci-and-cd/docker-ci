@@ -40,26 +40,26 @@ CMD ["run", "--user=gitlab-runner", "--working-directory=/var/lib/gitlab-runner"
 
 USER gitlab-runner
 
-### install node.js for current user
-#RUN curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.33.11/install.sh | bash \
-#    && touch ~/.bash_profile \
-#    && echo 'export NVM_DIR="$HOME/.nvm"\n\
-#[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm\n\
-#[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion\
-#    ' >> ~/.bash_profile \
-#    && . ~/.nvm/nvm.sh \
-#    && NVM_NODEJS_ORG_MIRROR="https://npm.taobao.org/mirrors/node" \
-#    && NVM_IOJS_ORG_MIRROR="https://npm.taobao.org/mirrors/iojs" \
-#    && nvm install 9.11.1
-### install python for current user
-#RUN set -ex \
-#    && curl -L https://raw.github.com/yyuu/pyenv-installer/master/bin/pyenv-installer | bash \
-#    && touch ~/.bash_profile \
-#    && echo 'export PATH="${HOME}/.pyenv/bin:$PATH"' >> ~/.bash_profile \
-#    && echo 'if which pyenv > /dev/null; then eval "$(pyenv init -)"; eval "$(pyenv virtualenv-init -)"; fi' >> ~/.bash_profile \
-#    && /bin/bash --login -c "pyenv install 2.7.14 && pyenv install 3.6.5" \
-### install rust for current user
-#RUN curl -sSf https://sh.rustup.rs > /tmp/install_rustup.sh \
-#    && chmod +x /tmp/install_rustup.sh \
-#    && /tmp/install_rustup.sh -y \
-#    && rm -f /tmp/install_rustup.sh
+## install node.js for current user
+RUN curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.33.11/install.sh | bash \
+    && touch ~/.bash_profile \
+    && echo 'export NVM_DIR="$HOME/.nvm"\n\
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm\n\
+[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion\
+    ' >> ~/.bash_profile \
+    && . ~/.nvm/nvm.sh \
+    && NVM_NODEJS_ORG_MIRROR="https://npm.taobao.org/mirrors/node" \
+    && NVM_IOJS_ORG_MIRROR="https://npm.taobao.org/mirrors/iojs" \
+    && nvm install 9.11.1
+## install python for current user
+RUN set -ex \
+    && curl -L https://raw.github.com/yyuu/pyenv-installer/master/bin/pyenv-installer | bash \
+    && touch ~/.bash_profile \
+    && echo 'export PATH="${HOME}/.pyenv/bin:$PATH"' >> ~/.bash_profile \
+    && echo 'if which pyenv > /dev/null; then eval "$(pyenv init -)"; eval "$(pyenv virtualenv-init -)"; fi' >> ~/.bash_profile \
+    && /bin/bash --login -c "pyenv install 2.7.14 && pyenv install 3.6.5" \
+## install rust for current user
+RUN curl -sSf https://sh.rustup.rs > /tmp/install_rustup.sh \
+    && chmod +x /tmp/install_rustup.sh \
+    && /tmp/install_rustup.sh -y \
+    && rm -f /tmp/install_rustup.sh

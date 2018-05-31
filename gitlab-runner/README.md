@@ -127,11 +127,7 @@ before_script:
 
 Copy ssh key into container
 ```bash
-docker exec gitlab-runner.local sh -c "echo HOME \$HOME; ls -la /home/gitlab-runner/.ssh; cat /home/gitlab-runner/.ssh/config"
-docker cp ~/.ssh/id_rsa gitlab-runner.local:/home/gitlab-runner/.ssh/id_rsa
-docker exec gitlab-runner.local sh -c "sudo chown gitlab-runner:gitlab-runner /home/gitlab-runner/id_rsa; ls -la /home/gitlab-runner/.ssh"
-
-docker exec gitlab-runner.local sh -c "cp -r /home/gitlab-runner/.ssh ~/"
+docker exec gitlab-runner.local sh -c "echo HOME \$HOME"
 docker exec gitlab-runner.local sh -c "ls -la ~/.ssh; cat ~/.ssh/config"
 docker cp ~/.ssh/id_rsa gitlab-runner.local:/var/lib/gitlab-runner/.ssh/id_rsa
 docker exec gitlab-runner.local sh -c "sudo chown gitlab-runner:gitlab-runner ~/.ssh/id_rsa; ls -la ~/.ssh"
@@ -161,3 +157,4 @@ Make it looks like this:
     user = "git"
     identity_file = "/home/gitlab-runner/.ssh/id_rsa"
 ```
+If Edit /etc/gitlab-runner/config.toml not working, do git fetch in scripts of `.gitlab-ci.yml`

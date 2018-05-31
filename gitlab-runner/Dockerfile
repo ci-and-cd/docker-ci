@@ -25,18 +25,17 @@ export PATH=$JAVA_HOME/bin:$NODE_HOME/bin:$GRADLE_HOME/bin:$M2_HOME/bin:$PATH\n'
     && echo "gitlab-runner ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers \
     && chown -R gitlab-runner:docker /opt/node-*/lib \
     && chown -R gitlab-runner:docker /opt/node-*/bin \
-    && mkdir -p /home/gitlab-runner/.docker \
-    && mkdir -p /home/gitlab-runner/.m2 \
-    && mkdir -p /home/gitlab-runner/.ssh \
-    && chown -R gitlab-runner:docker /home/gitlab-runner
+    && mkdir -p /home/gitlab-runner \
+    && chown -R gitlab-runner:docker /home/gitlab-runner \
+    && chown -R gitlab-runner:docker /var/lib/gitlab-runner
 
 ADD docker/entrypoint /
 RUN chmod +x /entrypoint
 
-VOLUME ["/etc/gitlab-runner", "/home/gitlab-runner"]
+VOLUME ["/etc/gitlab-runner", "/var/lib/gitlab-runner"]
 
 ENTRYPOINT ["/usr/bin/dumb-init", "/entrypoint"]
-CMD ["run", "--user=gitlab-runner", "--working-directory=/home/gitlab-runner"]
+CMD ["run", "--user=gitlab-runner", "--working-directory=/var/lib/gitlab-runner"]
 
 
 USER gitlab-runner

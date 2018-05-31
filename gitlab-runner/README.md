@@ -103,3 +103,61 @@ docker exec -it gitlab-runner.local ls -la /home/gitlab-runner/.docker
 
 https://gitlab.com/gitlab-org/gitlab-ce/issues/20612
 ![](src/site/markdown/images/gitlab-runner-max-artifacts-size.png)
+
+- ERROR: 403
+Cloning repository...
+Cloning into '/home/gitlab-runner/builds/b3ef1983/0/contextPath/group/repository'...
+remote: Git access over HTTP is not allowed
+fatal: unable to access 'https://gitlab-ci-token:xxxxxxxxxxxxxxxxxxxx@domain/contextPath/group/repository.git/': The requested URL returned error: 403
+ERROR: Job failed: exit status 1
+
+see: https://gitlab.com/gitlab-org/gitlab-ce/issues/22501
+
+### see: https://gitlab.com/gitlab-org/gitlab-runner/issues/1884
+
+Clone manually
+
+in project's `.gitlab-ci.yml`
+```yaml
+before_script:
+- export GIT_STRATEGY=none
+```
+
+### see: https://stackoverflow.com/questions/39208420/how-do-i-enable-cloning-over-ssh-for-a-gitlab-runner
+
+Copy ssh key into container
+```bash
+docker exec gitlab-runner.local sh -c "echo HOME \$HOME; ls -la /home/gitlab-runner/.ssh; cat /home/gitlab-runner/.ssh/config"
+docker cp ~/.ssh/id_rsa gitlab-runner.local:/home/gitlab-runner/.ssh/id_rsa
+docker exec gitlab-runner.local sh -c "sudo chown gitlab-runner:gitlab-runner /home/gitlab-runner/id_rsa; ls -la /home/gitlab-runner/.ssh"
+
+docker exec gitlab-runner.local sh -c "cp -r /home/gitlab-runner/.ssh ~/"
+docker exec gitlab-runner.local sh -c "ls -la ~/.ssh; cat ~/.ssh/config"
+docker cp ~/.ssh/id_rsa gitlab-runner.local:/var/lib/gitlab-runner/.ssh/id_rsa
+docker exec gitlab-runner.local sh -c "sudo chown gitlab-runner:gitlab-runner ~/.ssh/id_rsa; ls -la ~/.ssh"
+```
+
+Edit /etc/gitlab-runner/config.toml
+```
+docker exec -it gitlab-runner.local /bin/bash
+sudo vi /etc/gitlab-runner/config.toml
+```
+
+Add:
+```
+  [runners.ssh]
+    user = "git"
+    identity_file = "/home/gitlab-runner/.ssh/id_rsa
+```
+Make it looks like this:
+```
+[[runners]]
+  name = "<name>"
+  url = "<url>"
+  token = "<token>"
+  executor = "shell"
+  [runners.ssh]
+    host = "repo.advai.org"
+    user = "git"
+    identity_file = "/home/gitlab-runner/.ssh/id_rsa"
+```

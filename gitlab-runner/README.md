@@ -3,6 +3,10 @@
 
 ## Start and register a runner
 
+It seems most recent version of gitlab-runner's build process can't see host's environment variables such as JAVA_HOME or CI_INFRA_OPT_GIT_AUTH_TOKEN.
+You can add environment variables at Repository->Settings->CI/CD Pipelines->Secret Variables.
+
+<del>
 1. CI_INFRA_OPT_GIT_AUTH_TOKEN
 
 OSS's ci script need the CI_INFRA_OPT_GIT_AUTH_TOKEN to access script or configuration in internal or private repository.
@@ -12,6 +16,7 @@ OSS's ci script need the CI_INFRA_OPT_GIT_AUTH_TOKEN to access script or configu
   From git service page (e.g. gitlab: http(s)://gitlab.local:10080/profile/personal_access_tokens page).
 
 - CI_INFRA_OPT_GIT_AUTH_TOKEN need to be set before container start by `export CI_INFRA_OPT_GIT_AUTH_TOKEN=<your_CI_INFRA_OPT_GIT_AUTH_TOKEN>`.
+</del>
 
 ## Start and register a runner on raw machine
 

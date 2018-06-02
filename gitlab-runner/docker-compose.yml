@@ -10,11 +10,9 @@ services:
     - CI_INFRA_OPT_GIT_AUTH_TOKEN=${CI_INFRA_OPT_GIT_AUTH_TOKEN:-your_CI_INFRA_OPT_GIT_AUTH_TOKEN}
     #external_links:
     #- ${NEXUS3_PROXY_DOMAIN:-nexus3}.${INFRASTRUCTURE:-local}:${FILESERVER_DOMAIN:-fileserver.local}
-    #- ${NEXUS3_PROXY_DOMAIN:-nexus3}.${INFRASTRUCTURE:-local}:${DOCKER_MIRROR_DOMAIN:-mirror.docker.local}
-    #- ${NEXUS3_PROXY_DOMAIN:-nexus3}.${INFRASTRUCTURE:-local}:${DOCKER_REGISTRY_DOMAIN:-registry.docker.local}
     # if your use domain names in code and need to access these hosts in CI/CD process
     #extra_hosts:
-    #- nexus3.internal: 127.0.0.1
+    #- "nexus3.internal:127.0.0.1"
     hostname: ${GITLAT_RUNNER_DOMAIN:-gitlab-runner}.${INFRASTRUCTURE:-local}
     image: cirepo/gitlab-runner:10.5.0-bionic
     # host type networking can't be used with links. This would result in undefined behavior

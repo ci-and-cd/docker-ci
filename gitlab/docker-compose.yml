@@ -5,21 +5,25 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    image: cirepo/gitlab:10.8.1-ce.0
-    restart: always
     container_name: ${GIT_DOMAIN:-gitlab}.${INFRASTRUCTURE:-local}
     hostname: ${GIT_DOMAIN:-gitlab}.${INFRASTRUCTURE:-local}
+    image: cirepo/gitlab:10.8.1-ce.0
+    networks:
+      local-network:
+        ipv4_address: 172.16.238.21
+        ipv6_address: 2001:3984:3989::21
     ports:
     - "${GITLAB_SHELL_SSH_PORT:-20022}:${GITLAB_SHELL_SSH_PORT:-20022}"
     - "${GIT_HTTP_PORT:-10080}:${GIT_HTTP_PORT:-10080}"
+    restart: always
     volumes:
     # for auto repo init
-    - volume-gitlab-git_volume:${GIT_VOLUME:-/app/gitlab/data}
+    - data:${GIT_VOLUME:-/app/gitlab/data}
     - ${WORKSPACE_ON_HOST:-../../}:${GIT_VOLUME:-/app/gitlab/data}/workspace
     # keep gitlab's data
-    - volume-gitlab-etc_gitlab:/etc/gitlab
-    - volume-gitlab-var_log_gitlab:/var/log/gitlab
-    - volume-gitlab-var_opt_gitlab:/var/opt/gitlab
+    - etc:/etc/gitlab
+    - log:/var/log/gitlab
+    - opt:/var/opt/gitlab
     #- ${HOME}/.ci-and-cd/${GIT_DOMAIN:-gitlab}.${INFRASTRUCTURE:-local}/etc/gitlab:/etc/gitlab
     #- ${HOME}/.ci-and-cd/${GIT_DOMAIN:-gitlab}.${INFRASTRUCTURE:-local}/var/log/gitlab:/var/log/gitlab
     #- ${HOME}/.ci-and-cd/${GIT_DOMAIN:-gitlab}.${INFRASTRUCTURE:-local}/var/opt/gitlab:/var/opt/gitlab
@@ -67,12 +71,38 @@ services:
 
 
 networks:
-  default:
+  local-network:
     external: true
-    name: oss-network
+    driver: bridge
+    enable_ipv6: true
+    ipam:
+      driver: default
+      config:
+      - subnet: 172.16.238.0/24
+      - subnet: 2001:3984:3989::/64
 
 volumes:
-  volume-gitlab-etc_gitlab: {}
-  volume-gitlab-git_volume: {}
-  volume-gitlab-var_log_gitlab: {}
-  volume-gitlab-var_opt_gitlab: {}
+  data:
+    driver: local
+    driver_opts:
+      type: none
+      device: ${PWD}/data/data
+      o: bind
+  etc:
+    driver: local
+    driver_opts:
+      type: none
+      device: ${PWD}/data/etc
+      o: bind
+  log:
+    driver: local
+    driver_opts:
+      type: none
+      device: ${PWD}/data/log
+      o: bind
+  opt:
+    driver: local
+    driver_opts:
+      type: none
+      device: ${PWD}/data/opt
+      o: bind

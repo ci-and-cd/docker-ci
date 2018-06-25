@@ -136,9 +136,9 @@ RUN set -ex \
     && apt-get -q autoremove \
     && apt-get -q clean -y && rm -rf /var/lib/apt/lists/* && rm -f /var/cache/apt/*.bin \
     && if [ -z "${build_fileserver}" ]; then build_fileserver="http://o9wbz99tz.bkt.clouddn.com"; fi \
-    && ${ARIA2C_DOWNLOAD} -o /usr/local/bin/docker-machine ${build_fileserver}/docker/machine/releases/download/v0.14.0/docker-machine-Linux-x86_64 \
+    && ${ARIA2C_DOWNLOAD} -d /usr/local/bin -o docker-machine ${build_fileserver}/docker/machine/releases/download/v0.14.0/docker-machine-Linux-x86_64 \
     && chmod +x /usr/local/bin/docker-machine \
-    && ${ARIA2C_DOWNLOAD} -o /usr/local/bin/docker-compose ${build_fileserver}/docker/compose/releases/download/1.21.2/docker-compose-Linux-x86_64 \
+    && ${ARIA2C_DOWNLOAD} -d /usr/local/bin -o docker-compose ${build_fileserver}/docker/compose/releases/download/1.21.2/docker-compose-Linux-x86_64 \
     && chmod +x /usr/local/bin/docker-compose
 
 ## install jdk8

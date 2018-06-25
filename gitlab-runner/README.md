@@ -158,7 +158,7 @@ Make it looks like this:
   token = "<token>"
   executor = "shell"
   [runners.ssh]
-    host = "repo.advai.org"
+    host = "<git-service>"
     user = "git"
     identity_file = "/home/gitlab-runner/.ssh/id_rsa"
 ```

@@ -1,35 +1,44 @@
 
-version: '3.6'
+version: '2.1'
 services:
-  gitlab-runner:
-    build:
-      context: .
-      dockerfile: Dockerfile
+  gitlab-runner-develop:
+    extends:
+      file: docker-compose-base.yml
+      service: base-gitlab-runner
     container_name: ${GITLAT_RUNNER_DOMAIN:-gitlab-runner}.${INFRASTRUCTURE:-local}
-    environment:
-    - CI_INFRA_OPT_GIT_AUTH_TOKEN=${CI_INFRA_OPT_GIT_AUTH_TOKEN:-your_CI_INFRA_OPT_GIT_AUTH_TOKEN}
-    #external_links:
-    #- ${NEXUS3_PROXY_DOMAIN:-nexus3}.${INFRASTRUCTURE:-local}:${FILESERVER_DOMAIN:-fileserver.local}
-    # if your use domain names in code and need to access these hosts in CI/CD process
-    #extra_hosts:
-    #- "nexus3.internal:127.0.0.1"
     hostname: ${GITLAT_RUNNER_DOMAIN:-gitlab-runner}.${INFRASTRUCTURE:-local}
-    image: cirepo/gitlab-runner:10.5.0-bionic
-    # host type networking can't be used with links. This would result in undefined behavior
-    #network_mode: host
-    restart: always
+    networks:
+      local-network:
+        ipv4_address: 172.16.238.25
+        ipv6_address: 2001:3984:3989::25
     volumes:
     - /var/run/docker.sock:/var/run/docker.sock
     # gitlab-runner user's home directory
-    - volume-gitlab-runner-home_gitlab-runner:/home/gitlab-runner
+    - home:/home/gitlab-runner
     # gitlab-runner's config directory
-    - volume-gitlab-runner-etc_gitlab-runner:/etc/gitlab-runner
+    - etc:/etc/gitlab-runner
 
 networks:
-  default:
+  local-network:
     external: true
-    name: oss-network
+    driver: bridge
+    enable_ipv6: true
+    ipam:
+      driver: default
+      config:
+      - subnet: 172.16.238.0/24
+      - subnet: 2001:3984:3989::/64
 
 volumes:
-  volume-gitlab-runner-home_gitlab-runner: {}
-  volume-gitlab-runner-etc_gitlab-runner: {}
+  etc:
+    driver: local
+    driver_opts:
+      type: none
+      device: ${PWD}/data/etc
+      o: bind
+  home:
+    driver: local
+    driver_opts:
+      type: none
+      device: ${PWD}/data/home
+      o: bind

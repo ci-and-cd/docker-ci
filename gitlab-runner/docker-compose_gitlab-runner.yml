@@ -27,7 +27,7 @@ volumes:
       type: none
       device: ${PWD}/data/home
       o: bind
-  home:
+  var:
     driver: local
     driver_opts:
       type: none

@@ -1,15 +1,19 @@
 #!/bin/bash
 
-update_ca() {
+function update_ca() {
   echo "Updating CA certificates..."
   cp "${CA_CERTIFICATES_PATH}" "${LOCAL_CA_PATH}"
   update-ca-certificates --fresh >/dev/null
 }
 
-if [ -f /var/run/docker.sock ]; then
-    chown root:gitlab-runner /var/run/docker.sock
-    chmod 660 /var/run/docker.sock
-fi
+function ensure_docker_sock() {
+    if [ -f /var/run/docker.sock ]; then
+        sudo chown root:docker /var/run/docker.sock
+        # add user gitlab-runner into group docker
+        sudo usermod -a -G docker gitlab-runner
+        sudo chmod 660 /var/run/docker.sock
+    fi
+}
 
 if [ ! -d ~/.docker ]; then mkdir -p ~/.docker; chmod 775 ~/.docker; fi
 if [ ! -d ~/.m2 ]; then mkdir -p ~/.m2; chmod 775 ~/.m2; fi
@@ -40,5 +44,8 @@ if [ -f "${CA_CERTIFICATES_PATH}" ]; then
   cmp --silent "${CA_CERTIFICATES_PATH}" "${LOCAL_CA_PATH}" || update_ca
 fi
 
+ensure_docker_sock
+while sleep 1m; do ensure_docker_sock; done &
 # launch gitlab-ci-multi-runner passing all arguments
 exec sudo gitlab-ci-multi-runner "$@"
+kill %1

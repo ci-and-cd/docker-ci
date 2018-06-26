@@ -1,31 +1,17 @@
 
 version: '2.1'
 services:
-  gitlab-runner-develop:
+  gitlab-runner:
     extends:
       file: docker-compose-base.yml
       service: base-gitlab-runner
     container_name: ${INSTANCE_NAME:-gitlab-runner}.${INSTANCE_DOMAIN:-local}
     hostname: ${INSTANCE_NAME:-gitlab-runner}.${INSTANCE_DOMAIN:-local}
-    networks:
-      local-network:
-        ipv4_address: 172.16.238.25
-        ipv6_address: 2001:3984:3989::25
+    network_mode: bridge
     volumes:
     - /var/run/docker.sock:/var/run/docker.sock
     - home:/home/gitlab-runner # gitlab-runner user's home directory
     - etc:/etc/gitlab-runner # gitlab-runner's config directory
-
-networks:
-  local-network:
-    external: true
-    driver: bridge
-    enable_ipv6: true
-    ipam:
-      driver: default
-      config:
-      - subnet: 172.16.238.0/24
-      - subnet: 2001:3984:3989::/64
 
 volumes:
   etc:

@@ -1,3 +1,3 @@
-# docker-gitlab
+# docker-ci
 
-Gitlab CE and runner images for home1-oss.
+Deprecated
